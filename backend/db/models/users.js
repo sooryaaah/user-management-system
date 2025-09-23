@@ -1,53 +1,52 @@
 const mongoose = require('mongoose');
-new mongoose.Schema({
-    name:{
-        type:String,
-        require:true
+
+const userSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
     },
-    email:{
-        type:String,
-        require:true
+    email: {
+        type: String,
+        required: true
     },
-    password:{
-        type:String,
-        require:true
+    password: {
+        type: String,
+        required: true
     },
-    loginCount:{
-        type:Number,
-        
+    loginCount: {
+        type: Number,
+        default: 0
     },
-    attendance:[
+    attendance: [
         {
-            present:{
-                type:Boolean,
-                require: true
+            present: {
+                type: Boolean,
+                required: true
             },
-            date:{
-                type:Date,
-                require:true
+            date: {
+                type: Date,
+                required: true
             }
         }
     ],
-    tasks:[
+    tasks: [
         {
-            task:{
-                type:String
+            task: {
+                type: String
             },
-            start:{
-                type:Boolean
+            start: {
+                type: Boolean
             },
-            completed:{
-                type:Boolean,
-                default:false
+            completed: {
+                type: Boolean,
+                default: false
             }
         }
     ],
-    permission:{
-        type:Boolean,
+    permission: {
+        type: Boolean,
         default: true
-    
     }
-})
+});
 
-
-
+module.exports = mongoose.models.User || mongoose.model("User", userSchema);
