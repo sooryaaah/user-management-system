@@ -1,14 +1,18 @@
 const User = require("../db/models/users");
 const bcrypt = require('bcrypt');
+const crypto = require('crypto')
+const sendEmail = require('../utils/sendEmail').sendEmail
+const passwordTemplate = require('../utils/email templates/passwordTemplate').passwordTemplate
 
-exports.signUp = async (req, res) => {
+
+exports.addUser = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email } = req.body;
 
-        if (!name || !email || !password) {
+        if (!name || !email) {
             return res.status(400).send({
                 success: false,
-                message: "Name, email, and password are required"
+                message: "Name and email are required"
             });
         }
 
@@ -20,15 +24,30 @@ exports.signUp = async (req, res) => {
             });
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const plainPassword = crypto.randomBytes(6).toString('base64');
+        console.log(plainPassword)
 
-        const newUser = await User.create({ name, email, password: hashedPassword });
+        let subject = "Company Account Authentication"
+        let html = passwordTemplate(name, plainPassword)
+        sendEmail(email, subject, html)
 
-        return res.status(201).send({
-            success: true,
-            message: "Successfully signed up",
-           
+        const hashedPassword = await bcrypt.hash(plainPassword, 10);
+
+        const newUser = new User({
+            name,
+            email,
+            password: hashedPassword
         });
+
+        const addUser = await User.create(newUser);
+
+        return res.status(200).send({
+            success: true,
+            message: "User created successfully"
+        })
+
+
+
     } catch (error) {
         console.error('Error while signing up:', error);
         return res.status(500).send({
