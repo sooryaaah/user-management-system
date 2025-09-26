@@ -13,9 +13,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    loginCount: {
-        type: Number,
-        default: 0
+    firstLogin : {
+        type: Boolean,
+        default: true
     },
     attendance: [
         {
