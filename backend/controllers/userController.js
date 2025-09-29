@@ -4,6 +4,7 @@ const crypto = require('crypto');
 const { send } = require("process");
 const sendEmail = require('../utils/sendEmail').sendEmail
 const passwordTemplate = require('../utils/email templates/passwordTemplate').passwordTemplate
+const jwt = require('jsonwebtoken')
 
 
 exports.addUser = async (req, res) => {
@@ -61,65 +62,26 @@ exports.addUser = async (req, res) => {
     }
 };
 
-exports.login = async (req, res) => {
+exports.getUsers = async (req, res) => {
     try {
-        let body = req.body;
-        let email = body.email;
-        if (!email) {
-            return res.status(400).send({
-                sucsess: false,
-                message: "please enter email"
-            })
-        }
-
-        let password = body.password;
-        if (!password) {
-            return res.status(400).send({
-                success: false,
-                message: "please enter password"
-            })
-        }
-
-        const checkMail = await User.findOne({ email })
-        console.log(checkMail)
-        if (!checkMail) {
-            return res.status(400).send({
-                success: false,
-                message: "email not found"
-            })
-        }
-        const checkPassword = bcrypt.compareSync(password,checkMail.password)
-
-        if (!checkPassword) {
-            return res.status(400).send({
-                success: false,
-                message: "passwords do not match"
-            })
-        }
-
-
-        if (checkMail.firstLogin == true) {
-            await User.updateOne({ email }, { $set: { firstLogin: false } })
-
-        }
-
+        const allUsers = await User.find()
 
         return res.status(200).send({
             success: true,
-            message: "successfully logged in ",
-            data: {
-                firstLogin: checkMail.firstLogin
-            }
+            message: 'fetched users successfully',
+            data: allUsers
         })
 
     } catch (error) {
-        console.log(error)
+        console.log('error while fetching users:', error)
         return res.status(400).send({
             success: false,
             message: error.message || error
         })
     }
-
 }
+
+
+
 
 
