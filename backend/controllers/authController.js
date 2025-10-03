@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const { send } = require("process");
 const jwt = require('jsonwebtoken')
 
+
 exports.login = async (req, res) => {
     try {
         let body = req.body;
@@ -44,7 +45,7 @@ exports.login = async (req, res) => {
             await User.updateOne({ email }, { $set: { firstLogin: false } })
 
         }
-        const token = jwt.sign({Id:checkMail._id }, process.env.PRIVATE_KEY, {expiresIn: "10d" })
+        const token = jwt.sign({ Id: checkMail._id }, process.env.PRIVATE_KEY, { expiresIn: "10d" })
 
         return res.status(200).send({
             success: true,
@@ -63,4 +64,54 @@ exports.login = async (req, res) => {
         })
     }
 
+}
+
+exports.resetPassword = async (req, res) => {
+    try {
+
+        let { currentPassword, newPassword } = req.body;
+
+        if (!currentPassword || !newPassword) {
+            return res.status(400).send({
+                success: false,
+                message: !currentPassword ? "please enter current password" : "Please enter new password "
+            })
+        }
+
+        let id = req.params.id
+        let userData = await User.findOne({ _id: id })
+
+        let currentPass = bcrypt.compareSync(currentPassword, userData.password)
+        console.log(currentPass)
+        if (currentPass == false) {
+            return res.status(400).send({
+                success: false,
+                message: "invalid password"
+            })
+        }
+
+        const salt = bcrypt.genSaltSync(10);
+        const hashedPass = bcrypt.hashSync(newPassword , salt);
+
+        let updatePass = await User.updateOne({_id:id},{$set:{password:hashedPass}})
+
+        
+
+
+        return res.status(200).send({
+            success: true,
+            message: " password succesfully changed"
+        })
+
+
+
+
+
+    } catch (error) {
+        console.log(error)
+        return res.status(400).send({
+            success: false,
+            message: error.message || error
+        })
+    }
 }

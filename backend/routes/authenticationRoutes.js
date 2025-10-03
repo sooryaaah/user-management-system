@@ -4,6 +4,7 @@ const authenticate = require('../controllers/authController');
 
 
 router.post('/login', authenticate.login )
+router.post('/resetpassword/:id', authenticate.resetPassword)
 
 
 
