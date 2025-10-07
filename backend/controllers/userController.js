@@ -41,7 +41,8 @@ exports.addUser = async (req, res) => {
         const newUser = new User({
             name,
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            userType: "employee"
         });
 
         const addUser = await User.create(newUser);

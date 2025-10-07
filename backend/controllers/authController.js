@@ -1,7 +1,9 @@
 const User = require("../db/models/users");
 const bcrypt = require('bcrypt');
 const { send } = require("process");
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv')
+dotenv.config()
 
 
 exports.login = async (req, res) => {
@@ -45,7 +47,7 @@ exports.login = async (req, res) => {
             await User.updateOne({ email }, { $set: { firstLogin: false } })
 
         }
-        const token = jwt.sign({ Id: checkMail._id }, process.env.PRIVATE_KEY, { expiresIn: "10d" })
+        const token = jwt.sign({ id: checkMail._id }, process.env.PRIVATE_KEY, { expiresIn: "10d" })
 
         return res.status(200).send({
             success: true,

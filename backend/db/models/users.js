@@ -46,6 +46,12 @@ const userSchema = new mongoose.Schema({
     permission: {
         type: Boolean,
         default: true
+    },
+
+    userType : {
+        type: String,
+        required: true,
+        enum: ["admin", "employee"]
     }
 });
 
