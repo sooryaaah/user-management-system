@@ -30,12 +30,14 @@ exports.accessController = async (req, res, accesstype , next) => {
             //validate 
             let userType = checkUser.userType ;
 
-            if(userType != accesstype){
+            if(userType != accesstype){ //admin == admin,manager ["admin", "manager"] use include method
                 return res.status(400).send({
                     success: false,
                     message: "You are not allowed"
                 })
             }else{
+
+                //check permission 
                 next()
             }
 
