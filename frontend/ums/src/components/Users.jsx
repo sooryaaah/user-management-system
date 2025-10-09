@@ -6,6 +6,7 @@ const Users = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        
         const token = localStorage.getItem('token')
         let response = await axios.get('http://localhost:4000/getusers', {
           Headers: {

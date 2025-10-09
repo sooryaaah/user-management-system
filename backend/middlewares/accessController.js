@@ -1,11 +1,13 @@
 const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
 dotenv.config()
-const User = require("../db/models/users");
+const User = require("../db/model/users");
 
 exports.accessController = async (req, res, accesstype, next) => {
     try {
         let authorization = req.headers['authorization'];
+        console.log( "headers:", req.headers)
+        console.log('authorization:', authorization)
         let token = authorization.split(" ")[1]
 
         if (!token || token === '' || token === "null" || token === "undefined" || token === null || token === undefined) {
@@ -17,6 +19,7 @@ exports.accessController = async (req, res, accesstype, next) => {
 
         let verifyToken = jwt.verify(token, process.env.PRIVATE_KEY, async (error, decode) => {
 
+            console.log("decoded token:",decode)
             if (error) {
                 return res.status(400).send({
                     success: false,
@@ -26,7 +29,7 @@ exports.accessController = async (req, res, accesstype, next) => {
 
             let userId = decode.id;
 
-            let checkUser = await User.findOne({ _id: id })
+            let checkUser = await User.findOne({ _id: userId })
 
             if (!checkUser) {
                 return res.status(400).send({
@@ -47,7 +50,7 @@ exports.accessController = async (req, res, accesstype, next) => {
                 })
             } else {
 
-                if(!permission){
+                if (!checkUser.permission) {
                     return res.status(400).send({
                         success: false,
                         message: "you are blocked"
