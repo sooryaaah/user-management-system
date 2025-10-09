@@ -1,10 +1,31 @@
 import React from 'react'
 import { LogIn, AtSign, Lock } from "lucide-react";
+import axios from 'axios'
 import { useState } from 'react';
 
 const Login = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+
+    const handleSubmit = async (e) => {
+        e.preventDefault
+
+        try {
+            const data = {
+                email,
+                password
+            }
+
+            const response = await axios.post('http://localhost:4000/login', data)
+
+            const token = res.data.token
+            if (token){
+                localStorage.setItem('token', token)
+            }
+        } catch (error) {
+            console.log('error while fetching', error)
+        }
+    }
 
 
     return (
@@ -35,7 +56,7 @@ const Login = () => {
 
 
                     {/* Login Form */}
-                    <form>
+                    <form onSubmit={handleSubmit}>
 
                         {/* Email Input */}
                         <div className="mb-5 relative">
@@ -95,7 +116,7 @@ const Login = () => {
                     </form>
 
                     {/* Footer Links */}
-                   
+
 
                     <div className="mt-4 text-center text-xs text-gray-400">
                         Need a new account?
