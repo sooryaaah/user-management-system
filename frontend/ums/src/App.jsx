@@ -2,7 +2,7 @@ import React from 'react'
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom"
 import Login from './pages/Login.jsx'
 import Dashboard from './components/Dashboard.jsx'
-import Users from '../../../backend/db/models/users.js'
+import Users from './components/Users.jsx'
 
 
 const App = () => {
