@@ -22,8 +22,10 @@ const Login = () => {
             if (token){
                 localStorage.setItem('token', token)
             }
+            console.log('logged in: ', response.data)
         } catch (error) {
-            console.log('error while fetching', error)
+            console.log('error while fetching', error.response?.data || error.message)
+            alert(error.response?.data?.message || "server error")
         }
     }
 
@@ -119,9 +121,9 @@ const Login = () => {
 
 
                     <div className="mt-4 text-center text-xs text-gray-400">
-                        Need a new account?
+                       
                         <a href="#" className="font-medium text-indigo-600 hover:text-indigo-800 transition duration-150 ease-in-out ml-1">
-                            Register Here
+                            Forgot Password
                         </a>
                     </div>
 

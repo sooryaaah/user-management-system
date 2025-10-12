@@ -9,8 +9,8 @@ const jwt = require('jsonwebtoken')
 
 exports.addUser = async (req, res) => {
     try {
-        const { name, email } = req.body;
-
+        const { name, email, position, department, joinDate } = req.body;
+        console.log('received body: ',req.body)
         if (!name || !email) {
             return res.status(400).send({
                 success: false,
@@ -42,7 +42,10 @@ exports.addUser = async (req, res) => {
             name,
             email,
             password: hashedPassword,
-            userType: "employee"
+            userType: "employee",
+            position,
+            department,
+            joinDate
         });
 
         const addUser = await User.create(newUser);

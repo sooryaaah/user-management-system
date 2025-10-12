@@ -8,6 +8,14 @@ dotenv.config()
 
 exports.login = async (req, res) => {
     try {
+
+        if (!mongoose.connection.readyState) {
+            return res.status(500).send({
+                success: false,
+                message: "Database not connected"
+            });
+        }
+
         let body = req.body;
         let email = body.email;
         if (!email) {
@@ -93,11 +101,11 @@ exports.resetPassword = async (req, res) => {
         }
 
         const salt = bcrypt.genSaltSync(10);
-        const hashedPass = bcrypt.hashSync(newPassword , salt);
+        const hashedPass = bcrypt.hashSync(newPassword, salt);
 
-        let updatePass = await User.updateOne({_id:id},{$set:{password:hashedPass}})
+        let updatePass = await User.updateOne({ _id: id }, { $set: { password: hashedPass } })
 
-        
+
 
 
         return res.status(200).send({

@@ -13,6 +13,15 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    position: {
+        type:String
+    },
+    department: {
+        type: String
+    },
+    joinDate: {
+        type: Date
+    },
     firstLogin : {
         type: Boolean,
         default: true
