@@ -20,7 +20,7 @@ const Users = () => {
           },
         });
         console.log(response)
-        setEmployees(response.data.data); // Make sure your API returns an array
+        setEmployees(response.data.data); 
       } catch (error) {
         console.log('Error while fetching:', error);
       }
@@ -32,13 +32,13 @@ const Users = () => {
 
   const deleteUser = async (id) => {
     try {
-      const response  = await axios.delete(`http://localhost:4000/deleteusers/${id}`, {
+      const response = await axios.delete(`http://localhost:4000/deleteusers/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`
         },
       })
-      
 
+      setEmployees(prev => prev.filter(emp => emp._id !==id))
 
 
     } catch (error) {

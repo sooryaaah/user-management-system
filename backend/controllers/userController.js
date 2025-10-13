@@ -88,9 +88,9 @@ exports.getUsers = async (req, res) => {
 exports.deleteUser = async (req, res) => {
     try {
         const params = req.params.id
-        const deleteUser = await User.deleteOne({ _id:id})
+        const deleteUser = await User.deleteOne({ _id: id })
 
-        if(deleteUser){
+        if (deleteUser) {
             return res.status(200).send({
                 success: true,
                 message: 'successfully removed user'
@@ -99,6 +99,43 @@ exports.deleteUser = async (req, res) => {
 
     } catch (error) {
         console.log("error in deleteUser : ", error)
+        return res.status(400).send({
+            success: false,
+            message: error.message || error
+        })
+    }
+}
+
+exports.addTasks = async (req, res) => {
+    try {
+        const body = req.body
+        const params = req.params.id
+        const task = body.task
+        if (!task) {
+            return res.status(400).send({
+                success: false,
+                message: 'Please add a task'
+            })
+        }
+        const tasks = await User.findOne({ tasks: task })
+        if (tasks) {
+            return res.status(400).send({
+                success: false,
+                message: 'task already added'
+            })
+
+        }
+        const newTask = new User({
+            tasks
+        })
+        const addTask = await User.create(newTask)
+
+        return res.status(200).send({
+            success: true,
+            message : ' task successfully added'
+        })
+    } catch (error) {
+        console.log("error in addTasks :", error)
         return res.status(400).send({
             success: false,
             message: error.message || error

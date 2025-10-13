@@ -34,7 +34,12 @@ const AddUser = () => {
             })
             console.log('user added', response.data)
             setModal(false)
-            setEmployees({ name: "", email: "" });
+            window.location.reload(); 
+            setEmployees({
+                name: "", email: "", position: "",
+                department: "",
+                joinDate: ""
+            });
         } catch (error) {
             console.log('error while fetching :', error.response?.data || error.message)
         }
@@ -61,7 +66,7 @@ const AddUser = () => {
                                 <input type="email" name="email" onChange={(e) => setEmployees({ ...employees, [e.target.name]: e.target.value })} value={employees.email} placeholder='email' className="w-full px-3 py-2 border rounded" />
                                 <input type="text" onChange={(e) => setEmployees({ ...employees, [e.target.name]: e.target.value })} value={employees.position} placeholder='position' className="w-full px-3 py-2 border rounded" name='position' />
                                 <input type="text" onChange={(e) => setEmployees({ ...employees, [e.target.name]: e.target.value })} value={employees.department} placeholder='department' className="w-full px-3 py-2 border rounded" name='department' />
-                                <input type="date" onChange={(e) => setEmployees({ ...employees, [e.target.name]: e.target.value })} value={employees.joinData} placeholder='joining date' className="w-full px-3 py-2 border rounded" name='join date' />
+                                <input type="date" onChange={(e) => setEmployees({ ...employees, [e.target.name]: e.target.value })} value={employees.joinData} placeholder='joining date' className="w-full px-3 py-2 border rounded" name='joinDate' />
 
                                 <div className="flex justify-end gap-2 mt-6">
                                     <button
