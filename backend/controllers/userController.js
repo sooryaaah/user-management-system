@@ -10,7 +10,7 @@ const jwt = require('jsonwebtoken')
 exports.addUser = async (req, res) => {
     try {
         const { name, email, position, department, joinDate } = req.body;
-        console.log('received body: ',req.body)
+        console.log('received body: ', req.body)
         if (!name || !email) {
             return res.status(400).send({
                 success: false,
@@ -78,6 +78,27 @@ exports.getUsers = async (req, res) => {
 
     } catch (error) {
         console.log('error while fetching users:', error)
+        return res.status(400).send({
+            success: false,
+            message: error.message || error
+        })
+    }
+}
+
+exports.deleteUser = async (req, res) => {
+    try {
+        const params = req.params.id
+        const deleteUser = await User.deleteOne({ _id:id})
+
+        if(deleteUser){
+            return res.status(200).send({
+                success: true,
+                message: 'successfully removed user'
+            })
+        }
+
+    } catch (error) {
+        console.log("error in deleteUser : ", error)
         return res.status(400).send({
             success: false,
             message: error.message || error

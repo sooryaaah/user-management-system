@@ -11,6 +11,7 @@ function setAccessController(accessType){
 
 router.post('/adduser',setAccessController('admin,manager'), userController.addUser )
 router.get('/getusers',setAccessController('admin'), userController.getUsers)
+router.delete('/deleteusers/:id',setAccessController('admin'), userController.deleteUser)
 
 
 

@@ -14,7 +14,7 @@ const Sidebar = () => {
       <nav className="flex-1">
         <ul className="">
           <li className="px-6 py-3 hover:bg-indigo-50 cursor-pointer flex items-center gap-3 text-gray-700 font-medium">
-            <LayoutDashboard size={18} /> <Link to = '/'> Dashboard </Link>
+            <LayoutDashboard size={18} /> <Link to = '/dashboard'> Dashboard </Link>
           </li>
           <li className="px-6 py-3 hover:bg-indigo-50 cursor-pointer flex items-center gap-3 text-gray-700 font-medium">
             <Users size={18} /> 

@@ -4,22 +4,23 @@ import axios from 'axios';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import AddUser from './AddUser';
-import DeleteAction from './DeleteAction';
+import { Trash2 } from "lucide-react";
 
 const Users = () => {
   const [employees, setEmployees] = useState([]);
-
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem('token');
+
         const response = await axios.get('http://localhost:4000/getusers', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        setEmployees(response.data); // Make sure your API returns an array
+        console.log(response)
+        setEmployees(response.data.data); // Make sure your API returns an array
       } catch (error) {
         console.log('Error while fetching:', error);
       }
@@ -27,8 +28,27 @@ const Users = () => {
 
     fetchData();
   }, []);
+  console.log(employees)
 
-  
+  const deleteUser = async (id) => {
+    try {
+      const response  = await axios.delete(`http://localhost:4000/deleteusers/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+      })
+      
+
+
+
+    } catch (error) {
+      console.log('error in deleteUser', error)
+    }
+  }
+
+
+
+
 
   return (
     <div className="flex min-h-screen">
@@ -43,9 +63,9 @@ const Users = () => {
             <h1 className="text-3xl font-bold">Employees</h1>
             <p className="text-gray-500">Manage your employee records</p>
           </div>
-           <div>
-          <AddUser/>
-        </div>
+          <div>
+            <AddUser />
+          </div>
 
         </div>
 
@@ -70,21 +90,21 @@ const Users = () => {
                   </td>
                 </tr>
               ) : (
-                employees.map((emp, index) => (
-                  <tr key={index} className="border-t hover:bg-gray-50">
+                employees.map((emp) => (
+                  <tr key={emp._id} className="border-t hover:bg-gray-50">
                     <td className="px-4 py-3">{emp.name}</td>
                     <td className="px-4 py-3">{emp.email}</td>
                     <td className="px-4 py-3">{emp.position}</td>
                     <td className="px-4 py-3">{emp.department}</td>
                     <td className="px-4 py-3">{emp.joinDate}</td>
-                    <td className="px-4 py-3"> <DeleteAction/> </td>
+                    <td onClick={() => deleteUser(emp._id)} className="px-4 py-3"> <Trash2 size={20} className="text-red-500 cursor-pointer" /> </td>
                   </tr>
                 ))
               )}
             </tbody>
           </table>
         </div>
-       
+
 
       </div>
     </div>

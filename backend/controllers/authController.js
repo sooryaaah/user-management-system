@@ -9,12 +9,12 @@ dotenv.config()
 exports.login = async (req, res) => {
     try {
 
-        if (!mongoose.connection.readyState) {
-            return res.status(500).send({
-                success: false,
-                message: "Database not connected"
-            });
-        }
+        // if (!mongoose.connection.readyState) {
+        //     return res.status(500).send({
+        //         success: false,
+        //         message: "Database not connected"
+        //     });
+        // }
 
         let body = req.body;
         let email = body.email;
@@ -38,7 +38,7 @@ exports.login = async (req, res) => {
         if (!checkMail) {
             return res.status(400).send({
                 success: false,
-                message: "email not found"
+                message: "user not found"
             })
         }
         const checkPassword = bcrypt.compareSync(password, checkMail.password)

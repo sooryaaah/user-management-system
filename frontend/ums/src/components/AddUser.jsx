@@ -10,7 +10,7 @@ const AddUser = () => {
         email: '',
         position: '',
         department: '',
-        joinDate: '' 
+        joinDate: ''
 
     });
     const [modal, setModal] = useState(false);
@@ -26,7 +26,7 @@ const AddUser = () => {
 
         try {
             const token = localStorage.getItem('token');
-
+            console.log(token)
             const response = await axios.post('http://localhost:4000/adduser', employees, {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -59,9 +59,9 @@ const AddUser = () => {
                             <form onSubmit={handleSubmit}>
                                 <input type="text" name="name" onChange={(e) => setEmployees({ ...employees, [e.target.name]: e.target.value })} value={employees.name} placeholder='name' className="w-full px-3 py-2 border rounded" />
                                 <input type="email" name="email" onChange={(e) => setEmployees({ ...employees, [e.target.name]: e.target.value })} value={employees.email} placeholder='email' className="w-full px-3 py-2 border rounded" />
-                                <input type="text" onChange={(e) => setEmployees({ ...employees, [e.target.name]: e.target.value })}  value={employees.position} placeholder='position' className="w-full px-3 py-2 border rounded" name='position' />
-                                <input type="text" onChange={(e) => setEmployees({ ...employees, [e.target.name]: e.target.value })}  value={employees.department} placeholder='department' className="w-full px-3 py-2 border rounded" name='department' />
-                                <input type="date" onChange={(e) => setEmployees({ ...employees, [e.target.name]: e.target.value })}  value={employees.joinData} placeholder='joining date' className="w-full px-3 py-2 border rounded" name='join date' />
+                                <input type="text" onChange={(e) => setEmployees({ ...employees, [e.target.name]: e.target.value })} value={employees.position} placeholder='position' className="w-full px-3 py-2 border rounded" name='position' />
+                                <input type="text" onChange={(e) => setEmployees({ ...employees, [e.target.name]: e.target.value })} value={employees.department} placeholder='department' className="w-full px-3 py-2 border rounded" name='department' />
+                                <input type="date" onChange={(e) => setEmployees({ ...employees, [e.target.name]: e.target.value })} value={employees.joinData} placeholder='joining date' className="w-full px-3 py-2 border rounded" name='join date' />
 
                                 <div className="flex justify-end gap-2 mt-6">
                                     <button

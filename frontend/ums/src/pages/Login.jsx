@@ -2,13 +2,15 @@ import React from 'react'
 import { LogIn, AtSign, Lock } from "lucide-react";
 import axios from 'axios'
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const navigate = useNavigate()
 
     const handleSubmit = async (e) => {
-        e.preventDefault
+        e.preventDefault()
 
         try {
             const data = {
@@ -18,11 +20,14 @@ const Login = () => {
 
             const response = await axios.post('http://localhost:4000/login', data)
 
-            const token = res.data.token
+            const token = response.data.data.token
             if (token){
+                console.log(token)
                 localStorage.setItem('token', token)
+           
             }
             console.log('logged in: ', response.data)
+            navigate('/dashboard')
         } catch (error) {
             console.log('error while fetching', error.response?.data || error.message)
             alert(error.response?.data?.message || "server error")
