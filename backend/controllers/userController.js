@@ -117,23 +117,38 @@ exports.addTasks = async (req, res) => {
                 message: 'Please add a task'
             })
         }
-        const tasks = await User.findOne({ tasks: task })
-        if (tasks) {
+        const user = await User.findOne({ _id: id })
+        if (!user) {
+            return res.status(400).send({
+                success: false,
+                message: 'User not found'
+            })
+
+        }
+        const existingUser = user.tasks.find(t => t.task == task);
+        if(existingUser){
             return res.status(400).send({
                 success: false,
                 message: 'task already added'
             })
-
         }
-        const newTask = new User({
-            tasks
+
+        user.task.push({
+            task,
+            start: false,
+            completed: false
         })
-        const addTask = await User.create(newTask)
+
+        await user.save()
 
         return res.status(200).send({
             success: true,
-            message : ' task successfully added'
+            message: ' task added successfully',
+            data: user
         })
+
+
+
     } catch (error) {
         console.log("error in addTasks :", error)
         return res.status(400).send({
