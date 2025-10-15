@@ -88,7 +88,8 @@ exports.getUsers = async (req, res) => {
 exports.deleteUser = async (req, res) => {
     try {
         const params = req.params.id
-        const deleteUser = await User.deleteOne({ _id: id })
+        const deleteUser = await User.deleteOne({ _id: params })
+       
 
         if (deleteUser) {
             return res.status(200).send({
@@ -117,7 +118,7 @@ exports.addTasks = async (req, res) => {
                 message: 'Please add a task'
             })
         }
-        const user = await User.findOne({ _id: id })
+        const user = await User.findOne({ _id: params})
         if (!user) {
             return res.status(400).send({
                 success: false,

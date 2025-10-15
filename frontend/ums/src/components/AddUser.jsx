@@ -68,6 +68,7 @@ const AddUser = () => {
                                 <input type="text" onChange={(e) => setEmployees({ ...employees, [e.target.name]: e.target.value })} value={employees.department} placeholder='department' className="w-full px-3 py-2 border rounded" name='department' />
                                 <input type="date" onChange={(e) => setEmployees({ ...employees, [e.target.name]: e.target.value })} value={employees.joinData} placeholder='joining date' className="w-full px-3 py-2 border rounded" name='joinDate' />
 
+{/* multipart */}
                                 <div className="flex justify-end gap-2 mt-6">
                                     <button
                                         onClick={() => setModal(false)}

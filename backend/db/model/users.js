@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     position: {
-        type:String
+        type: String
     },
     department: {
         type: String
@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
     joinDate: {
         type: Date
     },
-    firstLogin : {
+    firstLogin: {
         type: Boolean,
         default: true
     },
@@ -30,11 +30,11 @@ const userSchema = new mongoose.Schema({
         {
             present: {
                 type: Boolean,
-                
+
             },
             date: {
                 type: Date,
-                
+
             }
         }
     ],
@@ -57,10 +57,15 @@ const userSchema = new mongoose.Schema({
         default: true
     },
 
-    userType : {
+    userType: {
         type: String,
         required: true,
         enum: ["admin", "employee", "manager", "ceo"]
+    },
+
+    images: {
+        type : String,
+        
     }
 });
 
