@@ -10,7 +10,8 @@ const AddUser = () => {
         email: '',
         position: '',
         department: '',
-        joinDate: ''
+        joinDate: '',
+        profileImage: null
 
     });
     const [modal, setModal] = useState(false);
@@ -27,6 +28,13 @@ const AddUser = () => {
         try {
             const token = localStorage.getItem('token');
             console.log(token)
+            const formData = new formData();
+            formData.append("name", employees.name);
+            formData.append("email", employees.email);
+            formData.append("position", employees.position);
+            formData.append("department", employees.department);
+            formData.append("joinDate", employees.joinDate);
+            formData.append("profileImage", employees.profileImage);
             const response = await axios.post('http://localhost:4000/adduser', employees, {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -38,7 +46,7 @@ const AddUser = () => {
             setEmployees({
                 name: "", email: "", position: "",
                 department: "",
-                joinDate: ""
+                joinDate: "", profileImage: null
             });
         } catch (error) {
             console.log('error while fetching :', error.response?.data || error.message)
@@ -67,7 +75,7 @@ const AddUser = () => {
                                 <input type="text" onChange={(e) => setEmployees({ ...employees, [e.target.name]: e.target.value })} value={employees.position} placeholder='position' className="w-full px-3 py-2 border rounded" name='position' />
                                 <input type="text" onChange={(e) => setEmployees({ ...employees, [e.target.name]: e.target.value })} value={employees.department} placeholder='department' className="w-full px-3 py-2 border rounded" name='department' />
                                 <input type="date" onChange={(e) => setEmployees({ ...employees, [e.target.name]: e.target.value })} value={employees.joinData} placeholder='joining date' className="w-full px-3 py-2 border rounded" name='joinDate' />
-                                <input type="file" />
+                                <input type="file" onChange={(e) => setEmployees({...employees, profileImage: e.target.files[0]})} name='profileImage' className="w-full px-3 py-2 border rounded" />
                                 {/* multipart */}
                                 <div className="flex justify-end gap-2 mt-6">
                                     <button
