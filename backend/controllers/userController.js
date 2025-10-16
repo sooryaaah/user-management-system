@@ -4,7 +4,8 @@ const crypto = require('crypto');
 const { send } = require("process");
 const sendEmail = require('../utils/sendEmail').sendEmail
 const passwordTemplate = require('../utils/email templates/passwordTemplate').passwordTemplate
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const { uploadToCloudinary } = require("../utils/uploadToCloudinary");
 
 
 exports.addUser = async (req, res) => {
@@ -37,16 +38,26 @@ exports.addUser = async (req, res) => {
         // console.log(sendmail)
 
         const hashedPassword = await bcrypt.hash(plainPassword, 10);
+       
+            let newUser = new User({
+                name,
+                email,
+                password: hashedPassword,
+                userType: "employee",
+                position,
+                department,
+                joinDate
+            });
 
-        const newUser = new User({
-            name,
-            email,
-            password: hashedPassword,
-            userType: "employee",
-            position,
-            department,
-            joinDate
-        });
+             if (req.file){
+            const result = await uploadToCloudinary(req.file.buffer, "images")
+            const images = result.secure_url;
+
+            newUser = {
+                ...newUser,
+                images
+            }
+        }
 
         const addUser = await User.create(newUser);
 
@@ -89,7 +100,7 @@ exports.deleteUser = async (req, res) => {
     try {
         const params = req.params.id
         const deleteUser = await User.deleteOne({ _id: params })
-       
+
 
         if (deleteUser) {
             return res.status(200).send({
@@ -118,7 +129,7 @@ exports.addTasks = async (req, res) => {
                 message: 'Please add a task'
             })
         }
-        const user = await User.findOne({ _id: params})
+        const user = await User.findOne({ _id: params })
         if (!user) {
             return res.status(400).send({
                 success: false,
@@ -127,7 +138,7 @@ exports.addTasks = async (req, res) => {
 
         }
         const existingUser = user.tasks.find(t => t.task == task);
-        if(existingUser){
+        if (existingUser) {
             return res.status(400).send({
                 success: false,
                 message: 'task already added'
