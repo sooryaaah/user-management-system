@@ -11,7 +11,7 @@ const { uploadToCloudinary } = require("../utils/uploadToCloudinary");
 exports.addUser = async (req, res) => {
     try {
         const { name, email, position, department, joinDate } = req.body;
-        console.log('received body: ', req.body)
+        
         if (!name || !email) {
             return res.status(400).send({
                 success: false,
@@ -50,13 +50,11 @@ exports.addUser = async (req, res) => {
             });
 
              if (req.file){
+                console.log('req.file: ', req.file)
             const result = await uploadToCloudinary(req.file.buffer, "images")
-            const images = result.secure_url;
+            newUser.images = result.secure_url;
 
-            newUser = {
-                ...newUser,
-                images
-            }
+            
         }
 
         const addUser = await User.create(newUser);

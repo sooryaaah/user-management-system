@@ -11,7 +11,7 @@ const AddUser = () => {
         position: '',
         department: '',
         joinDate: '',
-        profileImage: null
+        images: null
 
     });
     const [modal, setModal] = useState(false);
@@ -28,14 +28,16 @@ const AddUser = () => {
         try {
             const token = localStorage.getItem('token');
             console.log(token)
-            const formData = new formData();
+            let formData = new FormData();
             formData.append("name", employees.name);
             formData.append("email", employees.email);
             formData.append("position", employees.position);
             formData.append("department", employees.department);
             formData.append("joinDate", employees.joinDate);
-            formData.append("profileImage", employees.profileImage);
-            const response = await axios.post('http://localhost:4000/adduser', employees, {
+            formData.append("images", employees.images);
+
+            // console.log(formData)
+            const response = await axios.post('http://localhost:4000/adduser', formData, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -74,8 +76,8 @@ const AddUser = () => {
                                 <input type="email" name="email" onChange={(e) => setEmployees({ ...employees, [e.target.name]: e.target.value })} value={employees.email} placeholder='email' className="w-full px-3 py-2 border rounded" />
                                 <input type="text" onChange={(e) => setEmployees({ ...employees, [e.target.name]: e.target.value })} value={employees.position} placeholder='position' className="w-full px-3 py-2 border rounded" name='position' />
                                 <input type="text" onChange={(e) => setEmployees({ ...employees, [e.target.name]: e.target.value })} value={employees.department} placeholder='department' className="w-full px-3 py-2 border rounded" name='department' />
-                                <input type="date" onChange={(e) => setEmployees({ ...employees, [e.target.name]: e.target.value })} value={employees.joinData} placeholder='joining date' className="w-full px-3 py-2 border rounded" name='joinDate' />
-                                <input type="file" onChange={(e) => setEmployees({...employees, profileImage: e.target.files[0]})} name='profileImage' className="w-full px-3 py-2 border rounded" />
+                                <input type="date" onChange={(e) => setEmployees({ ...employees, [e.target.name]: e.target.value })} value={employees.joinDate} placeholder='joining date' className="w-full px-3 py-2 border rounded" name='joinDate' />
+                                <input type="file" onChange={(e) => setEmployees({ ...employees, images: e.target.files[0] })} name='images' className="w-full px-3 py-2 border rounded" />
                                 {/* multipart */}
                                 <div className="flex justify-end gap-2 mt-6">
                                     <button
