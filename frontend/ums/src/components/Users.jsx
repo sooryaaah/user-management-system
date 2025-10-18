@@ -5,10 +5,12 @@ import Sidebar from './Sidebar';
 import Header from './Header';
 import AddUser from './AddUser';
 import { Trash2 } from "lucide-react";
+import { useNavigate } from 'react-router-dom';
 
 const Users = () => {
   const [employees, setEmployees] = useState([]);
   const token = localStorage.getItem('token');
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -105,7 +107,7 @@ const Users = () => {
               ) : (
                 employees.map((emp) => (
                   <tr key={emp._id} className="border-t hover:bg-gray-50">
-                    <td className="px-4 py-3">{emp.name}</td>
+                    <td onClick={()=> navigate('/employeedetail')} className="px-4 py-3">{emp.name}</td>
                     <td className="px-4 py-3">{emp.email}</td>
                     <td className="px-4 py-3">{emp.position}</td>
                     <td className="px-4 py-3">{emp.department}</td>

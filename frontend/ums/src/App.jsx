@@ -5,6 +5,7 @@ import Dashboard from './components/Dashboard.jsx'
 import Users from './components/Users.jsx'
 import Employees from './pages/Employees.jsx'
 import Tasks from './pages/Tasks.jsx'
+import EmployeeDetail from './pages/EmployeeDetail.jsx'
 
 
 const App = () => {
@@ -17,6 +18,7 @@ const App = () => {
           <Route path='/users' element={<Users/> } />
           <Route path='/employees' element={<Employees/>} />
           <Route path='/tasks' element={<Tasks/>} />
+          <Route path='/employeedetail' element = {<EmployeeDetail/> } />
           
           
           
