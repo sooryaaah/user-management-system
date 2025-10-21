@@ -15,6 +15,7 @@ const AddUser = () => {
 
     });
     const [modal, setModal] = useState(false);
+    const [loading, setLoading] = useState(false)
 
 
     const handleSubmit = async (e) => {
@@ -26,6 +27,7 @@ const AddUser = () => {
         }
 
         try {
+            setLoading(true)
             const token = localStorage.getItem('token');
             console.log(token)
             let formData = new FormData();
@@ -52,6 +54,8 @@ const AddUser = () => {
             });
         } catch (error) {
             console.log('error while fetching :', error.response?.data || error.message)
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -83,17 +87,24 @@ const AddUser = () => {
                                     <button
                                         onClick={() => setModal(false)}
                                         className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                                        disabled={loading}
                                     >
                                         Cancel
                                     </button>
                                     <button type='submit'
 
                                         className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                                        disabled={loading}
                                     >
-                                        Add
+                                        {loading ? "adding.." : "add"}
                                     </button>
                                 </div>
                             </form>
+                            {loading && (
+                                <div className="absolute inset-0 flex items-center justify-center bg-white/60 rounded-lg">
+                                    <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                                </div>
+                            )}
                         </div>
 
                     </div>

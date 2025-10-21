@@ -24,8 +24,8 @@ const Users = () => {
         console.log(response)
 
         let employeeData = [];
-        for(let i = 0; i < response.data.data.length; i++) {
-          if(response.data.data[i].userType == "employee") {
+        for (let i = 0; i < response.data.data.length; i++) {
+          if (response.data.data[i].userType == "employee") {
             employeeData.push(response.data.data[i]);
           }
         }
@@ -33,7 +33,7 @@ const Users = () => {
         setEmployees(employeeData);
 
         // setEmployees(response.data.data)
-        
+
 
       } catch (error) {
         console.log('Error while fetching:', error);
@@ -42,7 +42,7 @@ const Users = () => {
 
     fetchData();
   }, []);
-  console.log("employees: ",employees, "\n", typeof employees);
+  console.log("employees: ", employees, "\n", typeof employees);
 
   const deleteUser = async (id) => {
     console.log(id)
@@ -107,8 +107,16 @@ const Users = () => {
               ) : (
                 employees.map((emp) => (
                   <tr key={emp._id} className="border-t hover:bg-gray-50">
-                    {/* <td><img src={emp.images} alt="" /> </td> */}
-                    <td onClick={()=> navigate(`/employeedetail/${emp._id}` )} className="px-4 py-3">{emp.name}</td>
+
+                    <td onClick={() => navigate(`/employeedetail/${emp._id}`)} className="px-4 py-3 cursor-pointer flex items-center gap-3">
+                      <img
+                        className="w-10 h-10 rounded-full object-cover"
+                        src={emp.images}
+                        alt=""
+                      />
+                      <span>
+                      {emp.name}</span>
+                      </td>
 
                     <td className="px-4 py-3">{emp.email}</td>
                     <td className="px-4 py-3">{emp.position}</td>
