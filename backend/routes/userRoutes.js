@@ -14,7 +14,7 @@ router.post('/adduser',setAccessController('admin,manager'), upload.single('imag
 router.get('/getusers',setAccessController('admin'), userController.getUsers)
 router.delete('/deleteusers/:id',setAccessController('admin'), userController.deleteUser)
 router.post('/addtask', setAccessController('admin'), userController.addTasks)
-
+router.get('/employeedetail/:id',setAccessController('admin, employee'), userController.getUser)
 
 
 

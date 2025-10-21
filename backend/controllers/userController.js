@@ -6,6 +6,7 @@ const sendEmail = require('../utils/sendEmail').sendEmail
 const passwordTemplate = require('../utils/email templates/passwordTemplate').passwordTemplate
 const jwt = require('jsonwebtoken');
 const { uploadToCloudinary } = require("../utils/uploadToCloudinary");
+const { log } = require("console");
 
 
 exports.addUser = async (req, res) => {
@@ -161,6 +162,36 @@ exports.addTasks = async (req, res) => {
 
     } catch (error) {
         console.log("error in addTasks :", error)
+        return res.status(400).send({
+            success: false,
+            message: error.message || error
+        })
+    }
+}
+
+exports.getUser = async (req, res) => {
+    try {
+        const id = req.params.id
+
+        if(!id){
+            return res.status(400).send({
+                success: false,
+                message: 'id not found'
+            })
+        }
+
+        const user = await User.findById(id)
+        console.log("user: ", user);
+        
+
+        return res.status(200).send({
+            success: true,
+            message: 'fetched user successfully',
+            data: user
+        })
+
+    } catch (error) {
+        console.log('error while fetching user:', error)
         return res.status(400).send({
             success: false,
             message: error.message || error

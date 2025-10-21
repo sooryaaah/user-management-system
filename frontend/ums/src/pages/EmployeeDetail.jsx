@@ -1,7 +1,43 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+
 
 const EmployeeDetail = () => {
+
+  const params = useParams()
+  const id = params.id
+    const token = localStorage.getItem('token')
+
+    const [userData, setUserData] = useState({
+    })
+
+  useEffect(() => {
+
+  
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get(`http://localhost:4000/employeedetail/${id}`,{
+          headers:{
+            Authorization: `Bearer ${token}`
+          }
+        } )
+
+        setUserData(response.data.data)
+        
+        console.log("response",response)
+      } catch (error) {
+        console.log('error while fetching user', error)
+      }
+    }
+    fetchUser()
+  }, [])
+
+
+
+
+
   return (
     <div className="p-6">
       <div className="flex items-center mb-6">
@@ -19,23 +55,23 @@ const EmployeeDetail = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <p className="text-gray-500 text-sm">Name</p>
-            <p className="text-lg font-medium text-gray-900">John Doe</p>
+            <p className="text-lg font-medium text-gray-900">{userData.name} </p>
           </div>
           <div>
             <p className="text-gray-500 text-sm">Email</p>
-            <p className="text-lg font-medium text-gray-900">johndoe@example.com</p>
+            <p className="text-lg font-medium text-gray-900">{userData.email} </p>
           </div>
           <div>
             <p className="text-gray-500 text-sm">Position</p>
-            <p className="text-lg font-medium text-gray-900">Software Engineer</p>
+            <p className="text-lg font-medium text-gray-900">{userData.position} </p>
           </div>
           <div>
             <p className="text-gray-500 text-sm">Department</p>
-            <p className="text-lg font-medium text-gray-900">Development</p>
+            <p className="text-lg font-medium text-gray-900">{userData.department} </p>
           </div>
           <div>
             <p className="text-gray-500 text-sm">Join Date</p>
-            <p className="text-lg font-medium text-gray-900">12 March 2024</p>
+            <p className="text-lg font-medium text-gray-900">{userData.joinDate} </p>
           </div>
           <div>
             <p className="text-gray-500 text-sm">Status</p>

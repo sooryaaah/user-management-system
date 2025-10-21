@@ -107,7 +107,9 @@ const Users = () => {
               ) : (
                 employees.map((emp) => (
                   <tr key={emp._id} className="border-t hover:bg-gray-50">
-                    <td onClick={()=> navigate('/employeedetail')} className="px-4 py-3">{emp.name}</td>
+                    {/* <td><img src={emp.images} alt="" /> </td> */}
+                    <td onClick={()=> navigate(`/employeedetail/${emp._id}` )} className="px-4 py-3">{emp.name}</td>
+
                     <td className="px-4 py-3">{emp.email}</td>
                     <td className="px-4 py-3">{emp.position}</td>
                     <td className="px-4 py-3">{emp.department}</td>
