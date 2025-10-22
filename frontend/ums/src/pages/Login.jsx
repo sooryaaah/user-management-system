@@ -19,15 +19,23 @@ const Login = () => {
             }
 
             const response = await axios.post('http://localhost:4000/login', data)
+            console.log(response);
 
             const token = response.data.data.token
-            if (token){
+            if (token) {
                 console.log(token)
                 localStorage.setItem('token', token)
-           
+
             }
-            console.log('logged in: ', response.data)
-            navigate('/dashboard')
+            // console.log('logged in: ', response.data)
+
+            if (response.data.data.userType == 'admin') {
+                navigate('/dashboard')
+            }else{
+                navigate(`/employeedetail/${response.data.data.id}`)
+            }
+
+
         } catch (error) {
             console.log('error while fetching', error.response?.data || error.message)
             alert(error.response?.data?.message || "server error")
@@ -126,7 +134,7 @@ const Login = () => {
 
 
                     <div className="mt-4 text-center text-xs text-gray-400">
-                       
+
                         <a href="#" className="font-medium text-indigo-600 hover:text-indigo-800 transition duration-150 ease-in-out ml-1">
                             Forgot Password
                         </a>

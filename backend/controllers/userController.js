@@ -53,7 +53,10 @@ exports.addUser = async (req, res) => {
              if (req.file){
                 console.log('req.file: ', req.file)
             const result = await uploadToCloudinary(req.file.buffer, "images")
-            newUser.images = result.secure_url;
+            console.log('result ', result);
+            
+            newUser.images.secure_url = result.secure_url
+            newUser.images.publicId = result.public_id
 
             
         }

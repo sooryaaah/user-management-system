@@ -64,7 +64,14 @@ const userSchema = new mongoose.Schema({
     },
 
     images: {
-        type : String,
+        secure_url : {
+            type : String,
+
+        },
+        publicId: {
+            type: String
+        }
+
         
     }
 });

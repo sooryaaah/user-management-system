@@ -6,7 +6,7 @@ const User = require("../db/model/users");
 exports.accessController = async (req, res, accesstype, next) => {
     try {
         let authorization = req.headers['authorization'];
-       
+
         let token = authorization.split(" ")[1]
 
         if (!token || token === '' || token === "null" || token === "undefined" || token === null || token === undefined) {
@@ -18,7 +18,7 @@ exports.accessController = async (req, res, accesstype, next) => {
 
         let verifyToken = jwt.verify(token, process.env.PRIVATE_KEY, async (error, decode) => {
 
-          
+
             if (error) {
                 return res.status(400).send({
                     success: false,
@@ -39,28 +39,16 @@ exports.accessController = async (req, res, accesstype, next) => {
 
             let userType = checkUser.userType;
 
-            const allowedRoles = accesstype.split(',')
+            const allowedRoles = accesstype.split(',');
+                console.log("usertypes: ", allowedRoles.includes(userType), userType, allowedRoles)
 
+            if(userType && allowedRoles.includes(userType)) {
+                console.log("usertypes: ", allowedRoles.includes(userType), userType, allowedRoles)
+                next();
 
-            if (!allowedRoles.includes(userType)) { //admin == admin,manager ["admin", "manager"] use include method
-                return res.status(400).send({
-                    success: false,
-                    message: "You are not allowed"
-                })
-            } else {
-
-                if (!checkUser.permission) {
-                    return res.status(400).send({
-                        success: false,
-                        message: "you are blocked"
-                    })
-                }
-                next()
+            }else {
+                return res.status(400).send("you are not allowed");
             }
-
-
-
-
         })
 
     } catch (error) {

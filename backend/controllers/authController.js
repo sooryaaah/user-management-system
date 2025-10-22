@@ -34,7 +34,6 @@ exports.login = async (req, res) => {
         }
 
         const checkMail = await User.findOne({ email })
-        console.log(checkMail)
         if (!checkMail) {
             return res.status(400).send({
                 success: false,
@@ -62,7 +61,10 @@ exports.login = async (req, res) => {
             message: "successfully logged in ",
             data: {
                 firstLogin: checkMail.firstLogin,
-                token
+                token,
+                userType:checkMail.userType,
+                id: checkMail._id
+
             }
         })
 
