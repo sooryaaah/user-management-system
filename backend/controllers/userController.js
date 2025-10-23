@@ -7,6 +7,7 @@ const passwordTemplate = require('../utils/email templates/passwordTemplate').pa
 const jwt = require('jsonwebtoken');
 const { uploadToCloudinary } = require("../utils/uploadToCloudinary");
 const { log } = require("console");
+const cloudinary = require('../db/cloudinary')
 
 
 exports.addUser = async (req, res) => {
@@ -101,7 +102,20 @@ exports.getUsers = async (req, res) => {
 exports.deleteUser = async (req, res) => {
     try {
         const params = req.params.id
+
+        const userData = await User.findOne({ _id: params })
+        const publicId = userData.images.publicId
+
+        cloudinary.uploader.destroy(publicId, { resource_type: 'image' })
+            .then(result =>console.log(result) )
+            .catch(err => console.log(err))
+
+
+
         const deleteUser = await User.deleteOne({ _id: params })
+
+
+
 
 
         if (deleteUser) {
@@ -110,6 +124,8 @@ exports.deleteUser = async (req, res) => {
                 message: 'successfully removed user'
             })
         }
+
+
 
     } catch (error) {
         console.log("error in deleteUser : ", error)
@@ -208,18 +224,18 @@ exports.editUser = async (req, res) => {
         const id = req.params.id
         const body = req.body
 
-        if (!id){
+        if (!id) {
             return res.status(400).send({
                 success: false,
                 message: 'id not found'
             })
         }
 
-        const user = await User.findByIdAndUpdate(id, body, {new: true})
-        console.log("user in editUser :",user)
+        const user = await User.findByIdAndUpdate(id, body, { new: true })
+        console.log("user in editUser :", user)
 
-        if(!user){
-             return res.status(400).send({
+        if (!user) {
+            return res.status(400).send({
                 success: false,
                 message: 'user not found'
             })

@@ -111,7 +111,7 @@ const Users = () => {
                     <td onClick={() => navigate(`/employeedetail/${emp._id}`)} className="px-4 py-3 cursor-pointer flex items-center gap-3">
                       <img
                         className="w-10 h-10 rounded-full object-cover"
-                        src={emp.images}
+                        src={emp.images.secure_url}
                         alt=""
                       />
                       <span>

@@ -53,7 +53,7 @@ const EmployeeDetail = () => {
       <div className="bg-white rounded-2xl shadow p-8">
         <h2 className="text-2xl font-semibold mb-6">Employee Details</h2>
         <img
-          src={userData.images}
+          src={userData.images?.secure_url}
           alt={userData.name}
           className="w-40 h-40 rounded-full object-cover shadow-md border my-10"
         />
