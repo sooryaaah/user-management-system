@@ -12,7 +12,7 @@ const { log } = require("console");
 exports.addUser = async (req, res) => {
     try {
         const { name, email, position, department, joinDate } = req.body;
-        
+
         if (!name || !email) {
             return res.status(400).send({
                 success: false,
@@ -39,26 +39,26 @@ exports.addUser = async (req, res) => {
         // console.log(sendmail)
 
         const hashedPassword = await bcrypt.hash(plainPassword, 10);
-       
-            let newUser = new User({
-                name,
-                email,
-                password: hashedPassword,
-                userType: "employee",
-                position,
-                department,
-                joinDate
-            });
 
-             if (req.file){
-                console.log('req.file: ', req.file)
+        let newUser = new User({
+            name,
+            email,
+            password: hashedPassword,
+            userType: "employee",
+            position,
+            department,
+            joinDate
+        });
+
+        if (req.file) {
+            console.log('req.file: ', req.file)
             const result = await uploadToCloudinary(req.file.buffer, "images")
             console.log('result ', result);
-            
+
             newUser.images.secure_url = result.secure_url
             newUser.images.publicId = result.public_id
 
-            
+
         }
 
         const addUser = await User.create(newUser);
@@ -176,7 +176,7 @@ exports.getUser = async (req, res) => {
     try {
         const id = req.params.id
 
-        if(!id){
+        if (!id) {
             return res.status(400).send({
                 success: false,
                 message: 'id not found'
@@ -185,7 +185,7 @@ exports.getUser = async (req, res) => {
 
         const user = await User.findById(id)
         console.log("user: ", user);
-        
+
 
         return res.status(200).send({
             success: true,
@@ -194,7 +194,46 @@ exports.getUser = async (req, res) => {
         })
 
     } catch (error) {
-        console.log('error while fetching user:', error)
+        console.log('error in getUser:', error)
+        return res.status(400).send({
+            success: false,
+            message: error.message || error
+        })
+    }
+}
+
+
+exports.editUser = async (req, res) => {
+    try {
+        const id = req.params.id
+        const body = req.body
+
+        if (!id){
+            return res.status(400).send({
+                success: false,
+                message: 'id not found'
+            })
+        }
+
+        const user = await User.findByIdAndUpdate(id, body, {new: true})
+        console.log("user in editUser :",user)
+
+        if(!user){
+             return res.status(400).send({
+                success: false,
+                message: 'user not found'
+            })
+        }
+
+        return res.status(200).send({
+            success: true,
+            message: 'user updated successfully'
+
+        })
+
+
+    } catch (error) {
+        console.log('error in editUser :', error)
         return res.status(400).send({
             success: false,
             message: error.message || error

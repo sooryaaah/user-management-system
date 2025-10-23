@@ -15,6 +15,7 @@ router.get('/getusers',setAccessController('admin'), userController.getUsers)
 router.delete('/deleteusers/:id',setAccessController('admin'), userController.deleteUser)
 router.post('/addtask', setAccessController('admin'), userController.addTasks)
 router.get('/employeedetail/:id',setAccessController('admin,employee'), userController.getUser)
+router.patch('/edituser/:id', setAccessController('admin,employee'), userController.editUser)
 
 
 

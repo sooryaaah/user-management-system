@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import EditEmployee from "../components/EditEmployee";
 
 
 const EmployeeDetail = () => {
@@ -60,11 +61,14 @@ const EmployeeDetail = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <p className="text-gray-500 text-sm">Name</p>
+            <div className="flex ">
             <p className="text-lg font-medium text-gray-900">{userData.name} </p>
+            <EditEmployee/>
+            </div>
           </div>
           <div>
             <p className="text-gray-500 text-sm">Email</p>
-            <p className="text-lg font-medium text-gray-900">{userData.email} </p>
+            <p className="text-lg font-medium text-gray-900">{userData.email}  </p>
           </div>
           <div>
             <p className="text-gray-500 text-sm">Position</p>
