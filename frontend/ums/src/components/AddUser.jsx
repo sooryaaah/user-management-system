@@ -96,7 +96,7 @@ const AddUser = () => {
                                         className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
                                         disabled={loading}
                                     >
-                                        {loading ? "adding.." : "add"}
+                                        {loading ? "Adding.." : "Add"}
                                     </button>
                                 </div>
                             </form>
