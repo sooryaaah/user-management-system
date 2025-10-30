@@ -124,7 +124,7 @@ const EmployeeDetail = () => {
                 title="Edit"
                 aria-label="Edit employee"
               >
-                <EditEmployee />
+                <EditEmployee id={id} />
               <h6>Edit</h6>
               </button>
 
@@ -237,7 +237,7 @@ const EmployeeDetail = () => {
 
                 {/* Contact & actions */}
                 <div className="space-y-2">
-                  <h2 className="text-sm font-semibold text-gray-500">Contact</h2>
+                  <h2 className="text-sm font-semibold text-gray-500">Contactc</h2>
                   <div className="bg-white border border-gray-100 rounded-lg p-4 flex flex-col gap-4">
                     {loading ? (
                       <>

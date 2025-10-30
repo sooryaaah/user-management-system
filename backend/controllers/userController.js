@@ -222,7 +222,7 @@ exports.getUser = async (req, res) => {
 exports.editUser = async (req, res) => {
     try {
         const id = req.params.id
-        const body = req.body
+        const {name, email, position, department} = req.body
 
         if (!id) {
             return res.status(400).send({
@@ -231,7 +231,24 @@ exports.editUser = async (req, res) => {
             })
         }
 
-        const user = await User.findByIdAndUpdate(id, body, { new: true })
+        let updateData = {
+            name,
+            email,
+            position,
+            department
+        }
+
+        if(req.file){
+            const uploadedImg = await cloudinary.uploader.upload(req.file.path, {
+                folder: "images"
+            })
+              updateData.images = {
+                secure_url: uploadedImg.secure_url,
+                publicId: uploadedImg.public_id
+            };
+        }
+
+        const user = await User.findByIdAndUpdate(id, updateData, { new: true })
         console.log("user in editUser :", user)
 
         if (!user) {
