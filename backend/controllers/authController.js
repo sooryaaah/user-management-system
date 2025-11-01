@@ -4,7 +4,8 @@ const { send } = require("process");
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv')
 dotenv.config()
-
+const generateOtp = require('../utils/otpGenerated').generateOtp
+const otpSchema = require('../db/model/otp')
 
 exports.login = async (req, res) => {
     try {
@@ -62,7 +63,7 @@ exports.login = async (req, res) => {
             data: {
                 firstLogin: checkMail.firstLogin,
                 token,
-                userType:checkMail.userType,
+                userType: checkMail.userType,
                 id: checkMail._id
 
             }
@@ -126,4 +127,54 @@ exports.resetPassword = async (req, res) => {
             message: error.message || error
         })
     }
+}
+
+
+exports.emailVerification = async (req, res) => {
+   try {
+     let body = req.body
+    let email = body.email
+
+    if (!email) {
+        return res.status(400).send({
+            sucsess: false,
+            message: "please enter email"
+        })
+    }
+
+    let userData = await User.findOne({email})
+
+    if(!userData){
+         return res.status(400).send({
+            sucsess: false,
+            message: "email not found"
+        })
+    }
+
+    let otp = generateOtp()
+    console.log(otp);
+
+
+    const newOtp = {
+        email: userData.email,
+        otp
+    }
+
+    const oneTimePass = await otpSchema.create(newOtp)
+
+    return res.status(200).send({
+        success: true,
+        message: 'otp generated. please check your email',
+        data: userData.email
+    })
+    
+   } catch (error) {
+    console.log("error in email verification:" ,error)
+     return res.status(400).send({
+            sucsess: false,
+            message: error.message || error
+        })
+   }
+
+
 }
