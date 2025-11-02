@@ -6,6 +6,9 @@ import Users from './components/Users.jsx'
 import Employees from './pages/Employees.jsx'
 import Tasks from './pages/Tasks.jsx'
 import EmployeeDetail from './pages/EmployeeDetail.jsx'
+import EmailVerification from './pages/EmailVerification.jsx'
+import OtpVerification from './pages/OtpVerification.jsx'
+import ResetPassword from './pages/ResetPassword.jsx'
 
 
 const App = () => {
@@ -19,6 +22,9 @@ const App = () => {
           <Route path='/employees' element={<Employees/>} />
           <Route path='/tasks' element={<Tasks/>} />
           <Route path='/employeedetail/:id' element = {<EmployeeDetail/> } />
+          <Route path='/emailverification' element = {<EmailVerification/>} />
+          <Route path='/otpverification' element = {<OtpVerification/>} />
+          <Route path='/resetpassword' element = {<ResetPassword/>} />
           
           
           

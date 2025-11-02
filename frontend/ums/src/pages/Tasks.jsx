@@ -3,9 +3,31 @@ import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 import { Plus, ClipboardList } from "lucide-react";
 import AddTask from "../components/AddTask";
+import { useEffect } from "react";
+import axios from "axios";
 
 const Tasks = () => {
-  const [showModal, setShowModal] = useState(false);
+  const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const res = await axios.get("http://localhost:4000/gettasks", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        setTasks(res.data.data);
+      } catch (err) {
+        console.log(err);
+        alert("Error fetching tasks");
+      }
+    };
+
+    fetchTasks(); 
+  }, []);
+
 
   return (
     <div className="flex min-h-screen">
@@ -21,43 +43,38 @@ const Tasks = () => {
             <h1 className="text-3xl font-bold">Tasks</h1>
             <p className="text-gray-500">Manage and assign tasks to employees</p>
           </div>
-          <AddTask/>
+
+          {/* Pass fetchTasks here so adding new task refreshes */}
+          <AddTask onSuccess={() => window.location.reload()} />
         </div>
 
-        {/* Task List Section */}
+        {/* Task List */}
         <div className="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Example Task Card */}
-          <div className="border rounded-xl shadow-sm p-5 bg-white hover:shadow-md transition">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-lg font-semibold">Design Landing Page</h3>
-              <span className="text-sm text-green-600 font-medium">In Progress</span>
-            </div>
-            <p className="text-gray-600 text-sm mb-4">
-              Assigned to: <span className="font-medium text-gray-800">Rahul</span>
-            </p>
-            <div className="flex justify-between items-center text-sm text-gray-500">
-              <span>Due: 14 Oct 2025</span>
-              <button className="text-indigo-600 hover:underline">View</button>
-            </div>
-          </div>
+          {tasks.length === 0 ? (
+            <p>No tasks available</p>
+          ) : (
+            tasks.map((task) => (
+              <div key={task._id} className="border rounded-xl shadow-sm p-5 bg-white">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-lg font-semibold">{task.title}</h3>
+                  <span className="text-sm text-blue-600 font-medium">Assigned</span>
+                </div>
 
-          <div className="border rounded-xl shadow-sm p-5 bg-white hover:shadow-md transition">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-lg font-semibold">Database Backup</h3>
-              <span className="text-sm text-yellow-600 font-medium">Pending</span>
-            </div>
-            <p className="text-gray-600 text-sm mb-4">
-              Assigned to: <span className="font-medium text-gray-800">Aisha</span>
-            </p>
-            <div className="flex justify-between items-center text-sm text-gray-500">
-              <span>Due: 16 Oct 2025</span>
-              <button className="text-indigo-600 hover:underline">View</button>
-            </div>
-          </div>
+                <p className="text-gray-600 text-sm mb-4">
+                  Assigned to:{" "}
+                  <span className="font-medium text-gray-800">
+                    {task.assignedTo?.name || "Unknown"}
+                  </span>
+                </p>
+
+                <div className="flex justify-between items-center text-sm text-gray-500">
+                  <span>Due: {task.dueDate?.slice(0, 10)}</span>
+                  <button className="text-indigo-600 hover:underline">View</button>
+                </div>
+              </div>
+            ))
+          )}
         </div>
-
-        {/* Add Task Modal */}
-       
       </div>
     </div>
   );

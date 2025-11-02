@@ -38,20 +38,7 @@ const userSchema = new mongoose.Schema({
             }
         }
     ],
-    tasks: [
-        {
-            task: {
-                type: String
-            },
-            start: {
-                type: Boolean
-            },
-            completed: {
-                type: Boolean,
-                default: false
-            }
-        }
-    ],
+   
     permission: {
         type: Boolean,
         default: true

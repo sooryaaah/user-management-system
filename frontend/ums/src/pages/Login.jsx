@@ -3,6 +3,7 @@ import { LogIn, AtSign, Lock } from "lucide-react";
 import axios from 'axios'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {Link} from "react-router-dom"
 
 const Login = () => {
     const [email, setEmail] = useState('')
@@ -31,7 +32,7 @@ const Login = () => {
 
             if (response.data.data.userType == 'admin') {
                 navigate('/dashboard')
-            }else{
+            } else {
                 navigate(`/employeedetail/${response.data.data.id}`)
             }
 
@@ -135,9 +136,9 @@ const Login = () => {
 
                     <div className="mt-4 text-center text-xs text-gray-400">
 
-                        <a href="#" className="font-medium text-indigo-600 hover:text-indigo-800 transition duration-150 ease-in-out ml-1">
-                            Forgot Password
-                        </a>
+                        <Link to="/emailverification" className="text-indigo-600 hover:underline">
+                            Forgot password?
+                        </Link>
                     </div>
 
                 </div> {/* End of Login Card */}

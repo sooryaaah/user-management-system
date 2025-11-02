@@ -13,7 +13,8 @@ function setAccessController(accessType){
 router.post('/adduser',setAccessController('admin,manager'), upload.single('images'),  userController.addUser )
 router.get('/getusers',setAccessController('admin'), userController.getUsers)
 router.delete('/deleteusers/:id',setAccessController('admin'), userController.deleteUser)
-router.post('/addtask', setAccessController('admin'), userController.addTasks)
+router.post('/addtask', setAccessController('admin'), userController.addTask)
+router.get("/gettasks", setAccessController('admin,manager,employee'), userController.getTasks);
 router.get('/employeedetail/:id',setAccessController('admin,employee'), userController.getUser)
 router.patch('/edituser/:id', setAccessController('admin,employee'), upload.single('images'), userController.editUser)
 

@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken');
 const { uploadToCloudinary } = require("../utils/uploadToCloudinary");
 const { log } = require("console");
 const cloudinary = require('../db/cloudinary')
-
+const Task = require('../db/model/tasks')
 
 exports.addUser = async (req, res) => {
     try {
@@ -136,57 +136,59 @@ exports.deleteUser = async (req, res) => {
     }
 }
 
-exports.addTasks = async (req, res) => {
-    try {
-        const body = req.body
-        const params = req.params.id
-        const task = body.task
-        if (!task) {
-            return res.status(400).send({
-                success: false,
-                message: 'Please add a task'
-            })
-        }
-        const user = await User.findOne({ _id: params })
-        if (!user) {
-            return res.status(400).send({
-                success: false,
-                message: 'User not found'
-            })
+exports.addTask = async (req, res) => {
+  try {
+    const { title, assignedTo, dueDate, description } = req.body;
 
-        }
-        const existingUser = user.tasks.find(t => t.task == task);
-        if (existingUser) {
-            return res.status(400).send({
-                success: false,
-                message: 'task already added'
-            })
-        }
-
-        user.task.push({
-            task,
-            start: false,
-            completed: false
-        })
-
-        await user.save()
-
-        return res.status(200).send({
-            success: true,
-            message: ' task added successfully',
-            data: user
-        })
-
-
-
-    } catch (error) {
-        console.log("error in addTasks :", error)
-        return res.status(400).send({
-            success: false,
-            message: error.message || error
-        })
+    if (!title || !assignedTo || !dueDate) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide title, assigned user and due date"
+      });
     }
-}
+
+    const newTask = await Task.create({
+      title,
+      assignedTo,
+      dueDate,
+      description,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Task created successfully",
+      data: newTask
+    });
+
+  } catch (error) {
+    console.log("Error in addTask:", error);
+    return res.status(400).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+exports.getTasks = async (req, res) => {
+  try {
+    const tasks = await Task.find()
+      .populate("assignedTo", "name email")  // shows employee name instead of only id
+      .sort({ createdAt: -1 }); // newest first
+
+    return res.status(200).json({
+      success: true,
+      message: "Tasks fetched successfully",
+      data: tasks
+    });
+
+  } catch (error) {
+    console.log("Error getting tasks:", error);
+    return res.status(400).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
 
 exports.getUser = async (req, res) => {
     try {
