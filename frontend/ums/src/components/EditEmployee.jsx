@@ -2,11 +2,16 @@ import React, { useEffect, useState } from 'react'
 import { Edit, X } from "lucide-react";
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { UserContext } from '../UserContext';
+import { useContext } from 'react';
 
 
 
 
 const EditEmployee = ({ id }) => {
+    const {userType} = useContext(UserContext)
+    console.log("user type:", userType);
+    
     const [modal, setModal] = useState(false)
     const [formData, setFormData] = useState({
         name: "",
@@ -15,7 +20,8 @@ const EditEmployee = ({ id }) => {
         department: "",
         image: null
     })
-    const [loggedUserRole, setLoggedUserRole] = useState('')
+    // const [loggedUserRole, setLoggedUserRole] = useState('')
+    
 
 
     const handleChange = (e) => {
@@ -75,7 +81,7 @@ const EditEmployee = ({ id }) => {
                     position: data.data.position,
                     department: data.data.department
                 })
-                setLoggedUserRole(data.data.userType)
+                // setLoggedUserRole(data.data.userType)
             }} size={30} className="p-2 rounded hover:bg-gray-100" />
 
             {modal && (
@@ -120,7 +126,7 @@ const EditEmployee = ({ id }) => {
                                     name="position"
                                     value={formData.position}
                                     onChange={handleChange}
-                                    disabled={loggedUserRole === "employee"}
+                                    disabled={userType === "employee"}
                                     className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300"
                                 />
                             </div>

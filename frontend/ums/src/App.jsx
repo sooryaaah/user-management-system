@@ -9,12 +9,14 @@ import EmployeeDetail from './pages/EmployeeDetail.jsx'
 import EmailVerification from './pages/EmailVerification.jsx'
 import OtpVerification from './pages/OtpVerification.jsx'
 import ResetPassword from './pages/ResetPassword.jsx'
-
+import { UserProvider } from './UserContext.jsx'
 
 const App = () => {
   return (
     <div>
-      <Router>
+
+    
+        <Router>
         <Routes>
           <Route path='/' element={<Login/> } />
           <Route path='/dashboard' element={<Dashboard/> } />
@@ -30,6 +32,7 @@ const App = () => {
           
         </Routes>
       </Router>
+   
     </div>
   )
 }

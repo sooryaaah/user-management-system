@@ -4,11 +4,16 @@ import axios from 'axios'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {Link} from "react-router-dom"
+import { UserContext } from '../UserContext';
+import { useContext } from 'react';
 
 const Login = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const navigate = useNavigate()
+
+    const {setUserType} = useContext(UserContext)
+
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -23,12 +28,21 @@ const Login = () => {
             console.log(response);
 
             const token = response.data.data.token
+            const userType = response.data.data.userType
+            console.log("usertype 1:", userType);
+            
             if (token) {
                 console.log(token)
                 localStorage.setItem('token', token)
 
             }
             // console.log('logged in: ', response.data)
+
+            if(userType){
+                setUserType(userType)
+                console.log("set usertype:", setUserType);
+                
+            }
 
             if (response.data.data.userType == 'admin') {
                 navigate('/dashboard')
