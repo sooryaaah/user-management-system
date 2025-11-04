@@ -10,6 +10,7 @@ import EmailVerification from './pages/EmailVerification.jsx'
 import OtpVerification from './pages/OtpVerification.jsx'
 import ResetPassword from './pages/ResetPassword.jsx'
 import { UserProvider } from './UserContext.jsx'
+import EmployeeDashboard from './pages/EmployeeDashboard.jsx'
 
 const App = () => {
   return (
@@ -27,6 +28,7 @@ const App = () => {
           <Route path='/emailverification' element = {<EmailVerification/>} />
           <Route path='/otpverification' element = {<OtpVerification/>} />
           <Route path='/resetpassword' element = {<ResetPassword/>} />
+          <Route path='/employeedashboard/:id' element = {<EmployeeDashboard/>}/>
           
           
           

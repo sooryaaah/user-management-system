@@ -30,7 +30,7 @@ exports.addUser = async (req, res) => {
         }
 
         const plainPassword = crypto.randomBytes(6).toString('base64');
-        console.log(plainPassword)
+        console.log('plain password:', plainPassword)
 
         // let subject = "Company Account Authentication"
         // let html = await passwordTemplate(name, plainPassword)
@@ -107,7 +107,7 @@ exports.deleteUser = async (req, res) => {
         const publicId = userData.images.publicId
 
         cloudinary.uploader.destroy(publicId, { resource_type: 'image' })
-            .then(result =>console.log(result) )
+            .then(result => console.log(result))
             .catch(err => console.log(err))
 
 
@@ -137,58 +137,89 @@ exports.deleteUser = async (req, res) => {
 }
 
 exports.addTask = async (req, res) => {
-  try {
-    const { title, assignedTo, dueDate, description } = req.body;
+    try {
+        const { title, assignedTo, dueDate, description } = req.body;
 
-    if (!title || !assignedTo || !dueDate) {
-      return res.status(400).json({
-        success: false,
-        message: "Please provide title, assigned user and due date"
-      });
+        if (!title || !assignedTo || !dueDate) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide title, assigned user and due date"
+            });
+        }
+
+        const newTask = await Task.create({
+            title,
+            assignedTo,
+            dueDate,
+            description,
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: "Task created successfully",
+            data: newTask
+        });
+
+    } catch (error) {
+        console.log("Error in addTask:", error);
+        return res.status(400).json({
+            success: false,
+            message: error.message
+        });
     }
-
-    const newTask = await Task.create({
-      title,
-      assignedTo,
-      dueDate,
-      description,
-    });
-
-    return res.status(200).json({
-      success: true,
-      message: "Task created successfully",
-      data: newTask
-    });
-
-  } catch (error) {
-    console.log("Error in addTask:", error);
-    return res.status(400).json({
-      success: false,
-      message: error.message
-    });
-  }
 };
 
 exports.getTasks = async (req, res) => {
-  try {
-    const tasks = await Task.find()
-      .populate("assignedTo", "name email")  // shows employee name instead of only id
-      .sort({ createdAt: -1 }); // newest first
+    try {
+        const tasks = await Task.find()
+            .populate("assignedTo", "name email")  // shows employee name instead of only id
+            .sort({ createdAt: -1 }); // newest first
 
-    return res.status(200).json({
-      success: true,
-      message: "Tasks fetched successfully",
-      data: tasks
-    });
+        return res.status(200).json({
+            success: true,
+            message: "Tasks fetched successfully",
+            data: tasks
+        });
 
-  } catch (error) {
-    console.log("Error getting tasks:", error);
-    return res.status(400).json({
-      success: false,
-      message: error.message
-    });
-  }
+    } catch (error) {
+        console.log("Error getting tasks:", error);
+        return res.status(400).json({
+            success: false,
+            message: error.message
+        });
+    }
 };
+
+exports.getTask = async (req, res) => {
+    try {
+        const id = req.params.id
+        console.log('id: ' ,req.params.id);
+        
+
+        if (!id) {
+            return res.status(400).send({
+               success: false,
+                message: "id not found"}
+            )
+        }
+
+        const task = await Task.find({assignedTo: id})
+        
+
+        return res.status(200).send({
+            success:true,
+            message: "fetched user successfulyy",
+            data: task
+        })
+    } catch (error) {
+        console.log("error in getTask: ", error);
+        return res.status(400).send({
+            success: false,
+            message: error.message
+        })
+
+    }
+}
 
 exports.getUser = async (req, res) => {
     try {
@@ -224,7 +255,7 @@ exports.getUser = async (req, res) => {
 exports.editUser = async (req, res) => {
     try {
         const id = req.params.id
-        const {name, email, position, department} = req.body
+        const { name, email, position, department } = req.body
 
         if (!id) {
             return res.status(400).send({
@@ -240,11 +271,11 @@ exports.editUser = async (req, res) => {
             department
         }
 
-        if(req.file){
+        if (req.file) {
             const uploadedImg = await cloudinary.uploader.upload(req.file.path, {
                 folder: "images"
             })
-              updateData.images = {
+            updateData.images = {
                 secure_url: uploadedImg.secure_url,
                 publicId: uploadedImg.public_id
             };

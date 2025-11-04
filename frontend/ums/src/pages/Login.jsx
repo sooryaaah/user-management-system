@@ -47,7 +47,8 @@ const Login = () => {
             if (response.data.data.userType == 'admin') {
                 navigate('/dashboard')
             } else {
-                navigate(`/employeedetail/${response.data.data.id}`)
+                // navigate(`/employeedetail/${response.data.data.id}`)
+                navigate(`/employeedashboard/${response.data.data.id}`)
             }
 
 
