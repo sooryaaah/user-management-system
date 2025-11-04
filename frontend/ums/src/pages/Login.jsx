@@ -3,7 +3,7 @@ import { LogIn, AtSign, Lock } from "lucide-react";
 import axios from 'axios'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom"
 import { UserContext } from '../UserContext';
 import { useContext } from 'react';
 
@@ -12,7 +12,7 @@ const Login = () => {
     const [password, setPassword] = useState('')
     const navigate = useNavigate()
 
-    const {setUserType} = useContext(UserContext)
+    const { setUserType } = useContext(UserContext)
 
 
     const handleSubmit = async (e) => {
@@ -25,12 +25,12 @@ const Login = () => {
             }
 
             const response = await axios.post('http://localhost:4000/login', data)
-            console.log(response);
+            console.log("response:", response);
 
             const token = response.data.data.token
             const userType = response.data.data.userType
             console.log("usertype 1:", userType);
-            
+
             if (token) {
                 console.log(token)
                 localStorage.setItem('token', token)
@@ -38,17 +38,20 @@ const Login = () => {
             }
             // console.log('logged in: ', response.data)
 
-            if(userType){
+            if (userType) {
                 setUserType(userType)
-                console.log("set usertype:", setUserType);
-                
+               
+
             }
 
             if (response.data.data.userType == 'admin') {
                 navigate('/dashboard')
             } else {
+                const userId = response.data.data.id
+               
                 // navigate(`/employeedetail/${response.data.data.id}`)
                 navigate(`/employeedashboard/${response.data.data.id}`)
+                // navigate('/resetpassword', {state: {id: userId}})
             }
 
 

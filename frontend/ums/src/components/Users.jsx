@@ -21,7 +21,7 @@ const Users = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log(response)
+        console.log("response in fetch data: ", response)
 
         let employeeData = [];
         for (let i = 0; i < response.data.data.length; i++) {

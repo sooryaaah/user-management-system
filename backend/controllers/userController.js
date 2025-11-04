@@ -136,6 +136,33 @@ exports.deleteUser = async (req, res) => {
     }
 }
 
+exports.deleteTask = async (req, res) => {
+    try {
+       const id = req.params.id
+       
+       const deleteTask = await Task.findByIdAndDelete(id)
+       if(!deleteTask){
+        return res.status(400).send({
+            success: false,
+            message: " task not found"
+        })
+        }
+
+        return res.status(200).send({
+            success:true,
+            message: "task successfully removed"
+        })
+       
+    } catch (error) {
+        console.log("error in delete task", error);
+        return res.status(400).send({
+            success: false,
+            message: error.message || error
+        }) 
+        
+    }
+}
+
 exports.addTask = async (req, res) => {
     try {
         const { title, assignedTo, dueDate, description } = req.body;

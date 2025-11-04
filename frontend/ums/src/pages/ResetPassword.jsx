@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 const ResetPassword = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const email = location.state?.email;
+  const id = location.state?.id
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
 
@@ -18,17 +18,20 @@ const ResetPassword = () => {
     }
     try {
       const changingPass = {
-        email,
-        newPassword:password,
-        confirmPassword:confirm
+       
+        currentPassword: password,
+        newPassword: confirm
       }
-      const response = await axios.post('http://localhost:4000/resetpassword', changingPass);
+      console.log("id:", id);
+    
+      console.log("passwords:", password, confirm);
+      const response = await axios.post(`http://localhost:4000/resetpassword/${id}`, changingPass);
       alert(response.data.message);
       navigate('/')
     } catch (error) {
-       console.log('error in handle submit: ', error)
+      console.log('error in handle submit: ', error.response?.message || error.message)
     }
-   
+
   };
 
   return (

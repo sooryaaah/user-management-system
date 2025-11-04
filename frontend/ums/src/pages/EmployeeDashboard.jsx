@@ -53,6 +53,29 @@ const EmployeeDashboard = () => {
     }, [])
     console.log("task", task);
 
+    const handleStatusUpdate = async (taskId) => {
+        try {
+            const response = await axios.put(
+                `http://localhost:4000/taskstatus/${taskId}`,
+                { status: "Completed" },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            // Update UI without refresh
+            setTask((prev) =>
+                prev.map((t) =>
+                    t._id === taskId ? { ...t, status: "Completed" } : t
+                )
+            );
+
+            alert("Task marked as Completed ✅");
+        } catch (error) {
+            console.log("Error updating status", error);
+            alert(error.response?.data?.message || "Failed to update status");
+        }
+    };
+
+
     return (
         <div className="min-h-screen bg-gray-50 p-8">
             {/* Employee Info Card */}
@@ -101,7 +124,7 @@ const EmployeeDashboard = () => {
 
             {/* Task Section */}
             <div className="bg-white shadow rounded-xl p-6 max-w-4xl mx-auto">
-               
+
 
                 <div className="space-y-4">
                     {/* Task Card */}
@@ -126,10 +149,10 @@ const EmployeeDashboard = () => {
                                             </p>
                                             <p
                                                 className={`inline-block mt-2 px-2 py-0.5 text-xs rounded-full ${t.status === "Completed"
-                                                        ? "bg-green-100 text-green-600"
-                                                        : t.status === "In Progress"
-                                                            ? "bg-yellow-100 text-yellow-600"
-                                                            : "bg-gray-100 text-gray-600"
+                                                    ? "bg-green-100 text-green-600"
+                                                    : t.status === "In Progress"
+                                                        ? "bg-yellow-100 text-yellow-600"
+                                                        : "bg-gray-100 text-gray-600"
                                                     }`}
                                             >
                                                 {t.status}
@@ -138,7 +161,7 @@ const EmployeeDashboard = () => {
 
                                         <button
                                             className="mt-3 sm:mt-0 flex items-center gap-2 border px-3 py-1 rounded-md text-sm text-gray-700 hover:bg-gray-100"
-                                            onClick={() => console.log("Mark Done clicked for", t._id)}
+                                            onClick={() => handleStatusUpdate(t._id)}
                                         >
                                             <CheckCircle className="w-4 h-4 text-green-600" />
                                             Mark Done

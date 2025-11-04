@@ -80,54 +80,56 @@ exports.login = async (req, res) => {
 }
 
 exports.resetPassword = async (req, res) => {
-    try {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const id = req.params.id;
 
-        let { currentPassword, newPassword } = req.body;
-
-        if (!currentPassword || !newPassword) {
-            return res.status(400).send({
-                success: false,
-                message: !currentPassword ? "please enter current password" : "Please enter new password "
-            })
-        }
-
-        let id = req.params.id
-        let userData = await User.findOne({ _id: id })
-
-        let currentPass = bcrypt.compareSync(currentPassword, userData.password)
-        console.log(currentPass)
-        if (currentPass == false) {
-            return res.status(400).send({
-                success: false,
-                message: "invalid password"
-            })
-        }
-
-        const salt = bcrypt.genSaltSync(10);
-        const hashedPass = bcrypt.hashSync(newPassword, salt);
-
-        let updatePass = await User.updateOne({ _id: id }, { $set: { password: hashedPass } })
-
-
-
-
-        return res.status(200).send({
-            success: true,
-            message: " password succesfully changed"
-        })
-
-
-
-
-
-    } catch (error) {
-        console.log(error)
-        return res.status(400).send({
-            success: false,
-            message: error.message || error
-        })
+    if (!currentPassword || !newPassword) {
+      return res.status(400).send({
+        success: false,
+        message: !currentPassword 
+          ? "Please enter current password" 
+          : "Please enter new password"
+      });
     }
-}
+
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).send({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const isMatch = bcrypt.compareSync(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).send({
+        success: false,
+        message: "Invalid current password",
+      });
+    }
+
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPass = bcrypt.hashSync(newPassword, salt);
+
+    user.password = hashedPass;
+    await user.save();
+
+    return res.status(200).send({
+      success: true,
+      message: "Password successfully changed",
+    });
+
+  } catch (error) {
+    console.log(error);
+    return res.status(400).send({
+      success: false,
+      message: error.message || error,
+    });
+  }
+};
+
 
 
 exports.emailVerification = async (req, res) => {

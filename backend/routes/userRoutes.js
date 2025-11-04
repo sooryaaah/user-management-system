@@ -18,8 +18,8 @@ router.get("/gettasks", setAccessController('admin,manager,employee'), userContr
 router.get('/employeedetail/:id',setAccessController('admin,employee'), userController.getUser)
 router.get('/gettask/:id' ,setAccessController('admin,employee'), userController.getTask)
 router.patch('/edituser/:id', setAccessController('admin,employee'), upload.single('images'), userController.editUser)
-router.post('/taskstatus/:id', setAccessController('admin,employee'), userController.taskStatus)
-
+router.put('/taskstatus/:taskId', setAccessController('admin,employee'), userController.taskStatus)
+router.delete('/deletetask/:id' , setAccessController('admin'), userController.deleteTask )
 
 
 

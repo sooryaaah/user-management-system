@@ -5,6 +5,7 @@ import { Plus, ClipboardList } from "lucide-react";
 import AddTask from "../components/AddTask";
 import { useEffect } from "react";
 import axios from "axios";
+import DeleteAction from "../components/DeleteAction"
 
 const Tasks = () => {
   const [tasks, setTasks] = useState([]);
@@ -28,6 +29,19 @@ const Tasks = () => {
     fetchTasks(); 
   }, []);
 
+  const deleteTask = async (id) =>{
+    try {
+       const token = localStorage.getItem("token");
+
+       const response = await axios.delete(`http://localhost:4000/deletetask/${id}` , {
+        headers: {Authorization: `Bearer ${token}`}
+       })
+       setTasks(prev => prev.filter(task => task._id !== id))
+    } catch (error) {
+      console.log("error in delete task :", error);
+      alert(error.message || error)
+    }
+  }
 
   return (
     <div className="flex min-h-screen">
@@ -69,7 +83,7 @@ const Tasks = () => {
 
                 <div className="flex justify-between items-center text-sm text-gray-500">
                   <span>Due: {task.dueDate?.slice(0, 10)}</span>
-                  <button className="text-indigo-600 hover:underline">View</button>
+                  <button onClick={()=> deleteTask(task._id)} className="text-indigo-600 hover:underline"> <DeleteAction/> </button>
                 </div>
               </div>
             ))
