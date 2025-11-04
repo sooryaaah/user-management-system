@@ -221,6 +221,64 @@ exports.getTask = async (req, res) => {
     }
 }
 
+exports.taskStatus = async (req, res) => {
+    try {
+        const {taskId} = req.params
+        const {status} = req.body
+
+        
+
+        if(!taskId){
+            return res.status(400).send({
+                success: false,
+                message: "task id not found"
+            })
+        }
+
+        if(!status){
+            return res.status(400).send({
+                success: false,
+                message: "status not updated"
+            })
+        }
+
+        const allowedStatus = ["Pending", "In progress" , "Completed"]
+
+        if(!allowedStatus.includes(status)){
+            return res.status(400).send({
+                success: false,
+                message: "invalid status"
+            })
+        }
+
+        const task = await Task.findByIdAndUpdate(taskId, {status}, {new: true}).populate("assignedTo", "name email")
+
+        if(!task){
+            return res.status(400).send({
+                success: false,
+                message: "task not found"
+            })
+        }
+
+        return res.status(200).send({
+            success: true,
+            data: {
+                id: task._id,
+                title:task.title,
+                status: task.status,
+                assignedTo:task.assignedTo
+                
+            }
+        })
+    } catch (error) {
+        console.log("error in taskStatus: ", error)
+        return res.status(400).send({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
 exports.getUser = async (req, res) => {
     try {
         const id = req.params.id

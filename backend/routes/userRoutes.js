@@ -16,8 +16,9 @@ router.delete('/deleteusers/:id',setAccessController('admin'), userController.de
 router.post('/addtask', setAccessController('admin'), userController.addTask)
 router.get("/gettasks", setAccessController('admin,manager,employee'), userController.getTasks);
 router.get('/employeedetail/:id',setAccessController('admin,employee'), userController.getUser)
-router.get('/gettask/:id' ,setAccessController('admin, employee'), userController.getTask)
+router.get('/gettask/:id' ,setAccessController('admin,employee'), userController.getTask)
 router.patch('/edituser/:id', setAccessController('admin,employee'), upload.single('images'), userController.editUser)
+router.post('/taskstatus/:id', setAccessController('admin,employee'), userController.taskStatus)
 
 
 

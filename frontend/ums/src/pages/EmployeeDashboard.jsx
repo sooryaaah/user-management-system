@@ -5,49 +5,53 @@ import axios from "axios";
 
 const EmployeeDashboard = () => {
 
-    const [userData, setUserData] = useState(null)
-    const [task, setTask] = useState(null)
-    const {id} = useParams()
+    const [userData, setUserData] = useState({})
+    const [task, setTask] = useState([])
+    const { id } = useParams()
     console.log("id:", id);
-    
+
     const token = localStorage.getItem("token");
     useEffect(() => {
-         const fetchData = async () => {
-        try {
-           
+        const fetchData = async () => {
+            try {
+
                 const response = await axios.get(`http://localhost:4000/employeedetail/${id}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 })
                 console.log('response:', response);
-                
+
                 setUserData(response.data.data)
             }
-         catch (error) {
-            console.log('error while fetching', error)
-            alert(error)
-        }}
+            catch (error) {
+                console.log('error while fetching', error)
+                alert(error)
+            }
+        }
         fetchData()
 
         const fetchTask = async () => {
             try {
-               const response = await axios.get(`http://localhost:4000/gettask/${id}`,{
+                const response = await axios.get(`http://localhost:4000/gettask/${id}`, {
                     headers: { Authorization: `Bearer ${token}` }
-                }) 
-             
-                
-                
+                })
 
-                console.log('T response :', response);
-                
+
+
+
+                console.log('T response :', response.data.data);
+
                 setTask(response.data.data)
+
             } catch (error) {
                 console.log('error while fetching task:', error || error.message);
                 alert(error.message || error)
-                
+
             }
         }
         fetchTask()
+
     }, [])
+    console.log("task", task);
 
     return (
         <div className="min-h-screen bg-gray-50 p-8">
@@ -56,7 +60,7 @@ const EmployeeDashboard = () => {
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <img
-                            src="https://i.pravatar.cc/100"
+                            src={userData?.images?.secure_url}
                             alt="profile"
                             className="w-20 h-20 rounded-full object-cover border"
                         />
@@ -97,31 +101,55 @@ const EmployeeDashboard = () => {
 
             {/* Task Section */}
             <div className="bg-white shadow rounded-xl p-6 max-w-4xl mx-auto">
-                <h2 className="text-lg font-semibold mb-2">My Tasks</h2>
-                <p className="text-sm text-gray-500 mb-4">Tasks assigned to you</p>
+               
 
                 <div className="space-y-4">
                     {/* Task Card */}
-                    <div className="border rounded-lg p-4 flex items-center justify-between">
-                        <div>
-                            <h3 className="font-medium">Submit Report</h3>
-                            <p className="text-xs text-gray-500">Due: 2025-11-12</p>
-                        </div>
-                        <button className="flex items-center gap-2 border px-3 py-1 rounded-md text-sm hover:bg-gray-100">
-                            <CheckCircle className="w-4 h-4" /> Mark Done
-                        </button>
+                    <div className="bg-white shadow rounded-xl p-6 max-w-4xl mx-auto">
+                        <h2 className="text-lg font-semibold mb-2">My Tasks</h2>
+                        <p className="text-sm text-gray-500 mb-4">Tasks assigned to you</p>
+
+                        {task.length === 0 ? (
+                            <p className="text-gray-500 text-sm">No tasks assigned yet.</p>
+                        ) : (
+                            <div className="space-y-3">
+                                {task.map((t) => (
+                                    <div
+                                        key={t._id}
+                                        className="border rounded-lg p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between hover:shadow-sm transition"
+                                    >
+                                        <div>
+                                            <h3 className="font-medium text-gray-900">{t.title}</h3>
+                                            <p className="text-sm text-gray-600">{t.description || "No description"}</p>
+                                            <p className="text-xs text-gray-500 mt-1">
+                                                Due: {new Date(t.dueDate).toLocaleDateString()}
+                                            </p>
+                                            <p
+                                                className={`inline-block mt-2 px-2 py-0.5 text-xs rounded-full ${t.status === "Completed"
+                                                        ? "bg-green-100 text-green-600"
+                                                        : t.status === "In Progress"
+                                                            ? "bg-yellow-100 text-yellow-600"
+                                                            : "bg-gray-100 text-gray-600"
+                                                    }`}
+                                            >
+                                                {t.status}
+                                            </p>
+                                        </div>
+
+                                        <button
+                                            className="mt-3 sm:mt-0 flex items-center gap-2 border px-3 py-1 rounded-md text-sm text-gray-700 hover:bg-gray-100"
+                                            onClick={() => console.log("Mark Done clicked for", t._id)}
+                                        >
+                                            <CheckCircle className="w-4 h-4 text-green-600" />
+                                            Mark Done
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
-                    {/* Task Card */}
-                    <div className="border rounded-lg p-4 flex items-center justify-between">
-                        <div>
-                            <h3 className="font-medium">Attend Team Meeting</h3>
-                            <p className="text-xs text-gray-500">Due: 2025-11-15</p>
-                        </div>
-                        <button className="flex items-center gap-2 bg-gray-200 text-gray-700 px-3 py-1 rounded-md text-sm cursor-not-allowed">
-                            <Clock className="w-4 h-4" /> Completed
-                        </button>
-                    </div>
+
                 </div>
             </div>
         </div>
