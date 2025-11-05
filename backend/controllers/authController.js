@@ -79,56 +79,56 @@ exports.login = async (req, res) => {
 
 }
 
-exports.resetPassword = async (req, res) => {
-  try {
-    const { currentPassword, newPassword } = req.body;
-    const id = req.params.id;
+// exports.resetPassword = async (req, res) => {
+//   try {
+//     const { currentPassword, newPassword } = req.body;
+//     const id = req.params.id;
 
-    if (!currentPassword || !newPassword) {
-      return res.status(400).send({
-        success: false,
-        message: !currentPassword 
-          ? "Please enter current password" 
-          : "Please enter new password"
-      });
-    }
+//     if (!currentPassword || !newPassword) {
+//       return res.status(400).send({
+//         success: false,
+//         message: !currentPassword 
+//           ? "Please enter current password" 
+//           : "Please enter new password"
+//       });
+//     }
 
-    const user = await User.findById(id);
+//     const user = await User.findById(id);
 
-    if (!user) {
-      return res.status(404).send({
-        success: false,
-        message: "User not found",
-      });
-    }
+//     if (!user) {
+//       return res.status(404).send({
+//         success: false,
+//         message: "User not found",
+//       });
+//     }
 
-    const isMatch = bcrypt.compareSync(currentPassword, user.password);
-    if (!isMatch) {
-      return res.status(400).send({
-        success: false,
-        message: "Invalid current password",
-      });
-    }
+//     const isMatch = bcrypt.compareSync(currentPassword, user.password);
+//     if (!isMatch) {
+//       return res.status(400).send({
+//         success: false,
+//         message: "Invalid current password",
+//       });
+//     }
 
-    const salt = bcrypt.genSaltSync(10);
-    const hashedPass = bcrypt.hashSync(newPassword, salt);
+//     const salt = bcrypt.genSaltSync(10);
+//     const hashedPass = bcrypt.hashSync(newPassword, salt);
 
-    user.password = hashedPass;
-    await user.save();
+//     user.password = hashedPass;
+//     await user.save();
 
-    return res.status(200).send({
-      success: true,
-      message: "Password successfully changed",
-    });
+//     return res.status(200).send({
+//       success: true,
+//       message: "Password successfully changed",
+//     });
 
-  } catch (error) {
-    console.log(error);
-    return res.status(400).send({
-      success: false,
-      message: error.message || error,
-    });
-  }
-};
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(400).send({
+//       success: false,
+//       message: error.message || error,
+//     });
+//   }
+// };
 
 
 
@@ -227,47 +227,30 @@ exports.otpVerification = async (req, res) => {
 }
 
 exports.resetPassword = async (req, res) => {
-    try {
-        let body = req.body;
-        let newPassword = body.newPassword;
-        let confirmPassword = body.confirmPassword;
-        let email = body.email
+  try {
+    const { id } = req.params;
+    const { newPassword } = req.body;
 
-        if (!email) {
-            return res.status(400).json({
-                success: false,
-                message: "something went wrong"
-            })
-        }
-        if (!newPassword || !confirmPassword) {
-            return res.status(400).json({
-                success: false,
-                message: !newPassword ? "Please enter a new password" : "Please confirm the password"
-
-            })
-        }
-
-        if (newPassword !== confirmPassword) {
-            return res.status(400).json({
-                success: false,
-                message: "Passwords do not match"
-            })
-        }
-
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(newPassword, salt)
-
-        const updatedPassword = await users.updateOne({ email: email }, { $set: { password: hashedPassword } })
-        return res.status(200).json({
-            success: true,
-            message: "Password succesfully updated"
-        })
-    } catch (error) {
-        console.log("error", error);
-        res.status(400).json({
-            success: false,
-            message: error.message || error
-        })
-
+    if (!newPassword) {
+      return res.status(400).json({ message: "New password required" });
     }
-}
+
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    
+    user.password = hashedPassword;
+    user.firstLogin = false;   // ✅ turn off first login
+    await user.save();
+
+    return res.json({ message: "Password reset successful. Please login." });
+  } catch (error) {
+    console.error("Reset Password Error:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};

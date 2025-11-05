@@ -20,7 +20,8 @@ router.get('/gettask/:id' ,setAccessController('admin,employee'), userController
 router.patch('/edituser/:id', setAccessController('admin,employee'), upload.single('images'), userController.editUser)
 router.put('/taskstatus/:taskId', setAccessController('admin,employee'), userController.taskStatus)
 router.delete('/deletetask/:id' , setAccessController('admin'), userController.deleteTask )
-
+router.post('/attendance/:userId', setAccessController('admin'), userController.markAttendance)
+router.get('/attendance/:date', setAccessController('admin'), userController.getAttendance);
 
 
 

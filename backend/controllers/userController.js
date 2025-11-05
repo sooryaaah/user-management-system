@@ -393,6 +393,65 @@ exports.editUser = async (req, res) => {
 }
 
 
+exports.markAttendance = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { present } = req.body;  // true / false
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const today = new Date().toDateString();
+
+    // Check if today's attendance already exists
+    const existing = user.attendance.find(
+      (entry) => new Date(entry.date).toDateString() === today
+    );
+
+    if (existing) {
+      existing.present = present; // Update existing
+    } else {
+      user.attendance.push({
+        present,
+        date: new Date()
+      });
+    }
+
+    await user.save();
+
+    res.json({ message: "Attendance marked successfully", attendance: user.attendance });
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+exports.getAttendance = async (req, res) => {
+  try {
+    const { date } = req.params; // "2025-02-01"
+    
+    const users = await User.find().select("name position images attendance");
+
+    const data = users.map(user => {
+      const record = user.attendance.find(a =>
+        new Date(a.date).toISOString().slice(0, 10) === date
+      );
+      
+      return {
+        userId: user._id,
+        present: record?.present ?? null,
+      };
+    });
+
+    res.json({ data });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+
 
 
 
