@@ -12,7 +12,7 @@ const Login = () => {
     const [password, setPassword] = useState('')
     const navigate = useNavigate()
 
-    const { setUserType } = useContext(UserContext)
+    const { setUsertype } = useContext(UserContext)
 
 
     const handleSubmit = async (e) => {
@@ -27,30 +27,33 @@ const Login = () => {
             const response = await axios.post('http://localhost:4000/login', data)
             console.log("response:", response);
 
-            const token = response.data.data.token
-            const userType = response.data.data.userType
-            console.log("usertype 1:", userType);
+
+            const { token, userType, id, firstLogin } = response.data.data;
 
             if (token) {
-                console.log(token)
+                console.log("token : ", token)
                 localStorage.setItem('token', token)
 
             }
             // console.log('logged in: ', response.data)
 
             if (userType) {
-                setUserType(userType)
-               
+                setUsertype(userType)
+
 
             }
 
-            if (response.data.data.userType == 'admin') {
+                if(userType !== "admin" && firstLogin == true){
+                    return navigate('/resetpassword' , {state: {id}})
+                }
+
+            if (userType == 'admin') {
                 navigate('/dashboard')
             } else {
-                const userId = response.data.data.id
                
+
                 // navigate(`/employeedetail/${response.data.data.id}`)
-                navigate(`/employeedashboard/${response.data.data.id}`)
+                navigate(`/employeedashboard/${id}`)
                 // navigate('/resetpassword', {state: {id: userId}})
             }
 

@@ -9,8 +9,8 @@ import { useContext } from 'react';
 
 
 const EditEmployee = ({ id }) => {
-    const {userType} = useContext(UserContext)
-    console.log("user type:", userType);
+    const {usertype} = useContext(UserContext)
+    console.log("user type:", usertype);
     
     const [modal, setModal] = useState(false)
     const [formData, setFormData] = useState({
@@ -41,7 +41,7 @@ const EditEmployee = ({ id }) => {
 
 
         if (formData.image) {
-            fd.append("image", formData.image);
+            fd.append("images", formData.image);
         }
 
 
@@ -51,8 +51,12 @@ const EditEmployee = ({ id }) => {
             const response = await axios.patch(`http://localhost:4000/edituser/${id}`, fd, {
                 headers: { Authorization: `Bearer ${token}`,
              "Content-Type": "multipart/form-data" }
+             
                
             })
+
+            console.log("response", response);
+            
 
             if (response.status === 200) {
 
@@ -126,7 +130,7 @@ const EditEmployee = ({ id }) => {
                                     name="position"
                                     value={formData.position}
                                     onChange={handleChange}
-                                    disabled={userType === "employee"}
+                                    disabled={usertype === "admin"}
                                     className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300"
                                 />
                             </div>

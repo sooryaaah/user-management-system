@@ -24,7 +24,7 @@ const Sidebar = () => {
             <ClipboardList size={18} />  <Link to='/tasks'>Tasks</Link>
           </li>
           <li className="px-6 py-3 hover:bg-indigo-50 cursor-pointer flex items-center gap-3 text-gray-700 font-medium">
-            <CalendarCheck size={18} /> Attendance
+            <CalendarCheck size={18} /><Link to='/attendance'>Attendance</Link>
           </li>
         </ul>
       </nav>

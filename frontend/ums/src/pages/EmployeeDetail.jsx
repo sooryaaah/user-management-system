@@ -17,12 +17,12 @@ const formatDate = (d) => {
   if (!d) return "—";
   const dt = new Date(d);
   if (isNaN(dt)) return d;
-  return dt.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+  return dt.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
 };
-
-const Skeleton = ({ className }) => (
-  <div className={`animate-pulse bg-gray-100 rounded ${className}`} />
-);
 
 const EmployeeDetail = () => {
   const { id } = useParams();
@@ -36,9 +36,12 @@ const EmployeeDetail = () => {
     const fetchUser = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`http://localhost:4000/employeedetail/${id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await axios.get(
+          `http://localhost:4000/employeedetail/${id}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         if (mounted) setUserData(response.data.data || {});
       } catch (error) {
         console.error("Error while fetching user:", error);
@@ -52,234 +55,147 @@ const EmployeeDetail = () => {
   }, [id, token]);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6 sm:p-10">
+    <div className="min-h-screen bg-gray-50 p-6 md:p-10">
       <div className="max-w-6xl mx-auto">
         {/* Back */}
-        <div className="mb-6">
-          <button
-            onClick={() => window.history.back()}
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900"
-            aria-label="Go back"
-          >
-            <ArrowLeft size={18} /> Back
-          </button>
+        <button
+          onClick={() => window.history.back()}
+          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6"
+        >
+          <ArrowLeft size={18} /> Back
+        </button>
+
+        {/* Gradient Header */}
+        <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl text-white shadow-lg p-6 md:p-8 flex flex-col md:flex-row items-center justify-between mb-10">
+          <div className="flex items-center gap-6">
+            <img
+              src={
+                userData?.images?.secure_url ||
+                "https://via.placeholder.com/150x150?text=User"
+              }
+              alt="profile"
+              className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md"
+            />
+            <div>
+              <h1 className="text-2xl font-semibold">
+                {loading ? "Loading..." : userData?.name || "Unnamed"}
+              </h1>
+              <p className="opacity-90 text-sm">
+                {userData?.position || "Position not set"}
+              </p>
+              <p className="text-sm opacity-75">{userData?.email || "—"}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 mt-6 md:mt-0">
+            <span
+              className={`px-4 py-1.5 rounded-full text-sm font-medium ${
+                (userData?.status || "Active").toLowerCase() === "active"
+                  ? "bg-white text-indigo-600"
+                  : "bg-gray-200 text-gray-700"
+              }`}
+            >
+              {userData?.status || "Active"}
+            </span>
+
+            <button className="flex items-center gap-2 bg-white text-indigo-600 px-4 py-1.5 rounded-lg font-medium hover:bg-indigo-50 transition">
+              <EditEmployee id={id} />
+              <span>Edit</span>
+            </button>
+
+            <button className="flex items-center gap-2 bg-red-600 text-white px-4 py-1.5 rounded-lg hover:bg-red-700 transition">
+              <Trash2 size={16} />
+              <span>Delete</span>
+            </button>
+          </div>
         </div>
 
-        {/* Container */}
-        <div className="bg-white shadow-lg rounded-2xl border border-gray-100 overflow-hidden">
-          {/* Header area */}
-          <div className="px-6 py-6 sm:px-8 sm:py-8 flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-8">
-            {/* Profile compact card (left) */}
-            <div className="flex items-center gap-5 w-full sm:w-auto">
-              {loading ? (
-                <Skeleton className="w-28 h-28 rounded-full" />
-              ) : (
-                <img
-                  src={userData?.images?.secure_url || "https://via.placeholder.com/200x200?text=User"}
-                  alt={userData?.name || "Employee avatar"}
-                  className="w-28 h-28 rounded-full object-cover border-4 border-white shadow-sm"
-                />
-              )}
+        {/* Stats */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+          <StatCard
+            icon={<User className="text-indigo-600" />}
+            title="Name"
+            value={userData?.name || "—"}
+          />
+          <StatCard
+            icon={<Briefcase className="text-purple-600" />}
+            title="Position"
+            value={userData?.position || "—"}
+          />
+          <StatCard
+            icon={<Building2 className="text-blue-600" />}
+            title="Department"
+            value={userData?.department || "—"}
+          />
+          <StatCard
+            icon={<Calendar className="text-yellow-500" />}
+            title="Join Date"
+            value={formatDate(userData?.joinDate)}
+          />
+        </div>
 
-              <div className="min-w-0">
-                {loading ? (
-                  <>
-                    <Skeleton className="h-5 w-40 mb-2" />
-                    <Skeleton className="h-4 w-28" />
-                  </>
-                ) : (
-                  <>
-                    <div className="flex items-center gap-3">
-                      <h1 className="text-2xl font-semibold text-slate-900 truncate">
-                        {userData?.name || "Unnamed"}
-                      </h1>
-                      {/* Edit inline: keep your EditEmployee component */}
-                      
-                    </div>
-                    <p className="text-sm text-gray-500 mt-1">{userData?.position || "Position not set"}</p>
-                  </>
-                )}
-              </div>
-            </div>
+        {/* Info Sections */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left: About */}
+          <div className="bg-white shadow rounded-2xl p-6">
+            <h2 className="text-lg font-semibold mb-3">About</h2>
+            <p className="text-gray-600 leading-relaxed">
+              {userData?.about ||
+                "No additional information provided. Update via Edit."}
+            </p>
+          </div>
 
-            {/* Header actions & status (right) */}
-            <div className="ml-auto flex items-center gap-3">
-              {loading ? (
-                <Skeleton className="h-8 w-20 rounded-full" />
-              ) : (
-                <span
-                  className={`inline-flex items-center gap-2 text-sm font-medium px-3 py-1 rounded-full ${
-                    (userData?.status || "active").toLowerCase() === "active"
-                      ? "bg-green-100 text-green-800"
-                      : "bg-gray-100 text-gray-700"
-                  }`}
-                  aria-live="polite"
-                >
-                  {(userData?.status || "Active").toString()}
-                </span>
-              )}
-
-              <button
-                className="inline-flex items-center gap-1 border border-gray-200 px-3 py-1.5 rounded-lg text-sm hover:bg-gray-50"
-                title="Edit"
-                aria-label="Edit employee"
-              >
-                <EditEmployee id={id} />
-              <h6>Edit</h6>
-              </button>
-
-              <button
-                className="inline-flex items-center gap-2 bg-red-600 text-white px-3 py-1.5 rounded-lg hover:bg-red-700"
-                title="Delete"
-                aria-label="Delete employee"
-              >
-                <Trash2 size={16} />
-                <span className="hidden sm:inline">Delete</span>
-              </button>
+          {/* Middle: Work Info */}
+          <div className="bg-white shadow rounded-2xl p-6">
+            <h2 className="text-lg font-semibold mb-3">Work Details</h2>
+            <div className="space-y-4 text-gray-700">
+              <InfoRow icon={<Building2 />} label="Department" value={userData?.department} />
+              <InfoRow icon={<Briefcase />} label="Role / Team" value={userData?.team || userData?.role} />
+              <InfoRow icon={<Calendar />} label="Join Date" value={formatDate(userData?.joinDate)} />
             </div>
           </div>
 
-          <div className="border-t border-gray-100 px-6 sm:px-8 py-8">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Left column: large profile summary */}
-              <div className="space-y-4">
-                <h2 className="text-sm font-semibold text-gray-500">Profile</h2>
-                <div className="bg-gray-50 border border-gray-100 rounded-lg p-4">
-                  {loading ? (
-                    <>
-                      <Skeleton className="h-4 w-32 mb-3" />
-                      <Skeleton className="h-3 w-full mb-2" />
-                      <Skeleton className="h-3 w-7/12" />
-                    </>
-                  ) : (
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2 text-gray-800">
-                        <User size={16} className="text-gray-400" />
-                        <span className="font-medium">{userData?.name || "—"}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-gray-800">
-                        <Mail size={16} className="text-gray-400" />
-                        <span>{userData?.email || "—"}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-gray-800">
-                        <Briefcase size={16} className="text-gray-400" />
-                        <span>{userData?.position || "—"}</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  <h3 className="text-sm font-semibold text-gray-500 mb-2">About</h3>
-                  <div className="prose prose-sm max-w-none text-gray-700">
-                    {loading ? (
-                      <>
-                        <Skeleton className="h-3 w-full mb-2" />
-                        <Skeleton className="h-3 w-11/12 mb-2" />
-                        <Skeleton className="h-3 w-9/12" />
-                      </>
-                    ) : (
-                      <p>
-                        {userData?.about ||
-                          "No additional information provided. You can update this via the edit button."}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Middle column: details */}
-              <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <h2 className="text-sm font-semibold text-gray-500">Work details</h2>
-                  <div className="bg-white border border-gray-100 rounded-lg p-4">
-                    {loading ? (
-                      <>
-                        <Skeleton className="h-4 w-24 mb-2" />
-                        <Skeleton className="h-3 w-full mb-1" />
-                        <Skeleton className="h-3 w-10/12" />
-                      </>
-                    ) : (
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3 text-gray-700">
-                            <Building2 size={16} className="text-gray-400" />
-                            <div>
-                              <div className="text-sm text-gray-500">Department</div>
-                              <div className="font-medium">{userData?.department || "—"}</div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3 text-gray-700">
-                            <Calendar size={16} className="text-gray-400" />
-                            <div>
-                              <div className="text-sm text-gray-500">Join Date</div>
-                              <div className="font-medium">{formatDate(userData?.joinDate)}</div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3 text-gray-700">
-                            <Briefcase size={16} className="text-gray-400" />
-                            <div>
-                              <div className="text-sm text-gray-500">Role / Team</div>
-                              <div className="font-medium">{userData?.team || userData?.role || "—"}</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Contact & actions */}
-                <div className="space-y-2">
-                  <h2 className="text-sm font-semibold text-gray-500">Contactc</h2>
-                  <div className="bg-white border border-gray-100 rounded-lg p-4 flex flex-col gap-4">
-                    {loading ? (
-                      <>
-                        <Skeleton className="h-4 w-20" />
-                        <Skeleton className="h-3 w-full" />
-                      </>
-                    ) : (
-                      <>
-                        <div className="flex items-center gap-3">
-                          <Mail size={16} className="text-gray-400" />
-                          <div>
-                            <div className="text-sm text-gray-500">Email</div>
-                            <div className="font-medium truncate">{userData?.email || "—"}</div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-3 mt-2">
-                          <User size={16} className="text-gray-400" />
-                          <div>
-                            <div className="text-sm text-gray-500">Employee ID</div>
-                            <div className="font-medium">{userData?._id || "—"}</div>
-                          </div>
-                        </div>
-
-                     
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Footer / meta */}
-            <div className="mt-8 text-sm text-gray-500">
-              <span>Last updated: </span>
-              <span className="font-medium">{loading ? "—" : formatDate(userData?.updatedAt || userData?.createdAt)}</span>
+          {/* Right: Contact Info */}
+          <div className="bg-white shadow rounded-2xl p-6">
+            <h2 className="text-lg font-semibold mb-3">Contact</h2>
+            <div className="space-y-4 text-gray-700">
+              <InfoRow icon={<Mail />} label="Email" value={userData?.email} />
+              <InfoRow icon={<User />} label="Employee ID" value={userData?._id} />
             </div>
           </div>
+        </div>
+
+        {/* Footer */}
+        <div className="mt-10 text-sm text-gray-500">
+          <span>Last updated: </span>
+          <span className="font-medium">
+            {formatDate(userData?.updatedAt || userData?.createdAt)}
+          </span>
         </div>
       </div>
     </div>
   );
 };
+
+// Reusable components
+const StatCard = ({ icon, title, value }) => (
+  <div className="bg-white rounded-2xl shadow hover:shadow-lg transition transform hover:-translate-y-1 p-5 flex items-center gap-4">
+    <div className="bg-gray-100 p-3 rounded-xl">{icon}</div>
+    <div>
+      <h3 className="text-sm text-gray-500">{title}</h3>
+      <p className="text-xl font-semibold text-gray-800">{value}</p>
+    </div>
+  </div>
+);
+
+const InfoRow = ({ icon, label, value }) => (
+  <div className="flex items-center gap-3">
+    <div className="text-gray-400">{icon}</div>
+    <div>
+      <div className="text-sm text-gray-500">{label}</div>
+      <div className="font-medium">{value || "—"}</div>
+    </div>
+  </div>
+);
 
 export default EmployeeDetail;
