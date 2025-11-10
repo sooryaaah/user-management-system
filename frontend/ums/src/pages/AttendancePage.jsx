@@ -15,7 +15,10 @@ import {
 const Attendance = () => {
     const [employees, setEmployees] = useState([]);
     const [attendance, setAttendance] = useState({});
-    const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
+    const [date, setDate] = useState(() => {
+        const today = new Date();
+        return today.toLocaleDateString('en-CA'); // yyyy-mm-dd in local timezone
+    });
     const token = localStorage.getItem("token");
 
     // Fetch employees
@@ -80,7 +83,7 @@ const Attendance = () => {
         } catch (err) {
             alert("Error saving attendance");
         }
-    };
+    };  
 
     // Chart data
     const presentCount = Object.values(attendance).filter(val => val === true).length;
@@ -125,63 +128,63 @@ const Attendance = () => {
 
                 {/* Attendance Table */}
                 <div className=" m-6 bg-white p-6 rounded-xl shadow-sm overflow-x-auto">
-                   <div className="max-h-[280px] overflow-y-auto">
-                     <table className="min-w-full border-collapse text-sm">
-                        <thead>
-                            <tr className="bg-gray-100 text-left text-gray-700">
-                                <th className="p-3">Employee</th>
-                                <th className="p-3">Position</th>
-                                <th className="p-3 text-center">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {employees.length === 0 ? (
-                                <tr>
-                                    <td colSpan="3" className="text-center p-4 text-gray-500">
-                                        No employees found
-                                    </td>
+                    <div className="max-h-[280px] overflow-y-auto">
+                        <table className="min-w-full border-collapse text-sm">
+                            <thead>
+                                <tr className="bg-gray-100 text-left text-gray-700">
+                                    <th className="p-3">Employee</th>
+                                    <th className="p-3">Position</th>
+                                    <th className="p-3 text-center">Status</th>
                                 </tr>
-                            ) : (
-                                employees.map(emp => (
-                                    <tr key={emp._id} className="border-b hover:bg-gray-50">
-                                        <td className="flex items-center gap-3 p-3">
-                                            <img
-                                                src={emp?.images?.secure_url}
-                                                className="w-10 h-10 rounded-full object-cover border"
-                                                alt="profile"
-                                            />
-                                            <span className="font-medium">{emp.name}</span>
-                                        </td>
-                                        <td className="p-3 text-gray-600">{emp.position}</td>
-                                        <td className="p-3 text-center">
-                                            <button
-                                                onClick={() => toggleAttendance(emp._id)}
-                                                className={`flex items-center gap-2 justify-center mx-auto px-3 py-1.5 rounded-md font-medium transition 
-                                                ${attendance[emp._id] === true
-                                                        ? "bg-green-100 text-green-700 border border-green-400"
-                                                        : attendance[emp._id] === false
-                                                            ? "bg-red-100 text-red-700 border border-red-400"
-                                                            : "bg-gray-100 text-gray-600 border"}`}
-                                            >
-                                                {attendance[emp._id] === true ? (
-                                                    <>
-                                                        <CheckCircle className="w-4 h-4" /> Present
-                                                    </>
-                                                ) : attendance[emp._id] === false ? (
-                                                    <>
-                                                        <XCircle className="w-4 h-4" /> Absent
-                                                    </>
-                                                ) : (
-                                                    "Mark"
-                                                )}
-                                            </button>
+                            </thead>
+                            <tbody>
+                                {employees.length === 0 ? (
+                                    <tr>
+                                        <td colSpan="3" className="text-center p-4 text-gray-500">
+                                            No employees found
                                         </td>
                                     </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                   </div>
+                                ) : (
+                                    employees.map(emp => (
+                                        <tr key={emp._id} className="border-b hover:bg-gray-50">
+                                            <td className="flex items-center gap-3 p-3">
+                                                <img
+                                                    src={emp?.images?.secure_url}
+                                                    className="w-10 h-10 rounded-full object-cover border"
+                                                    alt="profile"
+                                                />
+                                                <span className="font-medium">{emp.name}</span>
+                                            </td>
+                                            <td className="p-3 text-gray-600">{emp.position}</td>
+                                            <td className="p-3 text-center">
+                                                <button
+                                                    onClick={() => toggleAttendance(emp._id)}
+                                                    className={`flex items-center gap-2 justify-center mx-auto px-3 py-1.5 rounded-md font-medium transition 
+                                                ${attendance[emp._id] === true
+                                                            ? "bg-green-100 text-green-700 border border-green-400"
+                                                            : attendance[emp._id] === false
+                                                                ? "bg-red-100 text-red-700 border border-red-400"
+                                                                : "bg-gray-100 text-gray-600 border"}`}
+                                                >
+                                                    {attendance[emp._id] === true ? (
+                                                        <>
+                                                            <CheckCircle className="w-4 h-4" /> Present
+                                                        </>
+                                                    ) : attendance[emp._id] === false ? (
+                                                        <>
+                                                            <XCircle className="w-4 h-4" /> Absent
+                                                        </>
+                                                    ) : (
+                                                        "Mark"
+                                                    )}
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 {/* Attendance Summary */}

@@ -12,6 +12,7 @@ import ResetPassword from './pages/ResetPassword.jsx'
 import { UserProvider } from './UserContext.jsx'
 import EmployeeDashboard from './pages/EmployeeDashboard.jsx'
 import AttendancePage from './pages/AttendancePage.jsx'
+import MainResetPassword from './pages/MainResetPassword.jsx'
 
 const App = () => {
   return (
@@ -31,6 +32,7 @@ const App = () => {
           <Route path='/resetpassword' element = {<ResetPassword/>} />
           <Route path='/employeedashboard/:id' element = {<EmployeeDashboard/>}/>
           <Route path='/attendance' element= {<AttendancePage/>}></Route>
+          <Route path='/forgotpassword' element={<MainResetPassword/> } />
           
           
           

@@ -8,6 +8,8 @@ router.post('/resetpassword/:id', authenticate.resetPassword)
 router.post("/emailVerification", authenticate.emailVerification)
 router.post("/otpverification", authenticate.otpVerification)
 router.post("/resetpassword/:id", authenticate.resetPassword)
+router.post("/forgotpassword", authenticate.mainResetPassword)
+
 
 
 

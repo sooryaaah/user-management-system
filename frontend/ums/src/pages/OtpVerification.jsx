@@ -7,6 +7,8 @@ const OtpVerification = () => {
   const location = useLocation(); 
   const navigate = useNavigate();
   const email = location.state?.email;
+  console.log("email :", email);
+  
   const [otp, setOtp] = useState("");
 
   const handleSubmit = async (e) => {
@@ -21,7 +23,7 @@ const OtpVerification = () => {
 
       const response = await axios.post('http://localhost:4000/otpverification', data);
       alert(response.data.message)
-      navigate('/resetpassword', { state: { email } });
+      navigate('/forgotpassword', { state: { email } });
 
     } catch (error) {
       console.log("error in handleSUbmit:", error)
