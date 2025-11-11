@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 import axios from "axios";
-import { CheckCircle, XCircle, Calendar } from "lucide-react";
+import { CheckCircle, XCircle, Calendar, LogIn } from "lucide-react";
 import {
     PieChart,
     Pie,
@@ -15,6 +15,7 @@ import {
 const Attendance = () => {
     const [employees, setEmployees] = useState([]);
     const [attendance, setAttendance] = useState({});
+
     const [date, setDate] = useState(() => {
         const today = new Date();
         return today.toLocaleDateString('en-CA'); // yyyy-mm-dd in local timezone
@@ -63,10 +64,12 @@ const Attendance = () => {
     const toggleAttendance = (userId) => {
         setAttendance(prev => ({
             ...prev,
-            [userId]: !prev[userId]
+            [Id]: !prev[userId],
+            
         }));
     };
 
+    console.log("attendance: ", attendance)
     // Submit attendance
     const submitAttendance = async () => {
         try {
@@ -84,6 +87,8 @@ const Attendance = () => {
             alert("Error saving attendance");
         }
     };  
+
+    console.log(" after submit attendance: ", attendance)
 
     // Chart data
     const presentCount = Object.values(attendance).filter(val => val === true).length;

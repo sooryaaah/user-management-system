@@ -48,6 +48,8 @@ const EditEmployee = ({ id }) => {
 
         try {
 
+            console.log("fd:", fd);
+            
             const response = await axios.patch(`http://localhost:4000/edituser/${id}`, fd, {
                 headers: { Authorization: `Bearer ${token}`,
              "Content-Type": "multipart/form-data" }

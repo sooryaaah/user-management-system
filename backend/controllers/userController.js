@@ -357,9 +357,9 @@ exports.editUser = async (req, res) => {
         }
 
         if (req.file) {
-            const uploadedImg = await cloudinary.uploader.upload(req.file.path, {
-                folder: "images"
-            })
+            console.log("req.file: ", req.file);
+            
+            const uploadedImg = await uploadToCloudinary(req.file.buffer)
             updateData.images = {
                 secure_url: uploadedImg.secure_url,
                 publicId: uploadedImg.public_id
@@ -398,18 +398,22 @@ exports.markAttendance = async (req, res) => {
     const { userId } = req.params;
     const { present } = req.body;  // true / false
 
+    console.log("present:", req.body.present);
+    
+
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    const today = new Date().toDateString();
+    let date = req.body.date
 
     // Check if today's attendance already exists
     const existing = user.attendance.find(
-      (entry) => new Date(entry.date).toDateString() === today
+      (entry) => new Date(entry.date).toLocaleDateString('en-CA') === date
     );
 
     if (existing) {
       existing.present = present; // Update existing
+
     } else {
       user.attendance.push({
         present,
@@ -418,6 +422,8 @@ exports.markAttendance = async (req, res) => {
     }
 
     await user.save();
+    // console.log("user:", user);
+    
 
     res.json({ message: "Attendance marked successfully", attendance: user.attendance });
 

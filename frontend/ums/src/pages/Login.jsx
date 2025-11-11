@@ -40,6 +40,8 @@ const Login = () => {
             if (userType) {
                 setUsertype(userType)
 
+                console.log("userType:", userType);
+                
 
             }
 
