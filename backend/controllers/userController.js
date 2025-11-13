@@ -138,28 +138,28 @@ exports.deleteUser = async (req, res) => {
 
 exports.deleteTask = async (req, res) => {
     try {
-       const id = req.params.id
-       
-       const deleteTask = await Task.findByIdAndDelete(id)
-       if(!deleteTask){
-        return res.status(400).send({
-            success: false,
-            message: " task not found"
-        })
+        const id = req.params.id
+
+        const deleteTask = await Task.findByIdAndDelete(id)
+        if (!deleteTask) {
+            return res.status(400).send({
+                success: false,
+                message: " task not found"
+            })
         }
 
         return res.status(200).send({
-            success:true,
+            success: true,
             message: "task successfully removed"
         })
-       
+
     } catch (error) {
         console.log("error in delete task", error);
         return res.status(400).send({
             success: false,
             message: error.message || error
-        }) 
-        
+        })
+
     }
 }
 
@@ -220,21 +220,22 @@ exports.getTasks = async (req, res) => {
 exports.getTask = async (req, res) => {
     try {
         const id = req.params.id
-        console.log('id: ' ,req.params.id);
-        
+        console.log('id: ', req.params.id);
+
 
         if (!id) {
             return res.status(400).send({
-               success: false,
-                message: "id not found"}
+                success: false,
+                message: "id not found"
+            }
             )
         }
 
-        const task = await Task.find({assignedTo: id})
-        
+        const task = await Task.find({ assignedTo: id })
+
 
         return res.status(200).send({
-            success:true,
+            success: true,
             message: "fetched user successfulyy",
             data: task
         })
@@ -250,37 +251,37 @@ exports.getTask = async (req, res) => {
 
 exports.taskStatus = async (req, res) => {
     try {
-        const {taskId} = req.params
-        const {status} = req.body
+        const { taskId } = req.params
+        const { status } = req.body
 
-        
 
-        if(!taskId){
+
+        if (!taskId) {
             return res.status(400).send({
                 success: false,
                 message: "task id not found"
             })
         }
 
-        if(!status){
+        if (!status) {
             return res.status(400).send({
                 success: false,
                 message: "status not updated"
             })
         }
 
-        const allowedStatus = ["Pending", "In progress" , "Completed"]
+        const allowedStatus = ["Pending", "In progress", "Completed"]
 
-        if(!allowedStatus.includes(status)){
+        if (!allowedStatus.includes(status)) {
             return res.status(400).send({
                 success: false,
                 message: "invalid status"
             })
         }
 
-        const task = await Task.findByIdAndUpdate(taskId, {status}, {new: true}).populate("assignedTo", "name email")
+        const task = await Task.findByIdAndUpdate(taskId, { status }, { new: true }).populate("assignedTo", "name email")
 
-        if(!task){
+        if (!task) {
             return res.status(400).send({
                 success: false,
                 message: "task not found"
@@ -291,10 +292,10 @@ exports.taskStatus = async (req, res) => {
             success: true,
             data: {
                 id: task._id,
-                title:task.title,
+                title: task.title,
                 status: task.status,
-                assignedTo:task.assignedTo
-                
+                assignedTo: task.assignedTo
+
             }
         })
     } catch (error) {
@@ -356,9 +357,10 @@ exports.editUser = async (req, res) => {
             department
         }
 
+      
         if (req.file) {
             console.log("req.file: ", req.file);
-            
+
             const uploadedImg = await uploadToCloudinary(req.file.buffer)
             updateData.images = {
                 secure_url: uploadedImg.secure_url,
@@ -394,66 +396,68 @@ exports.editUser = async (req, res) => {
 
 
 exports.markAttendance = async (req, res) => {
-  try {
-    const { userId } = req.params;
-    const { present } = req.body;  // true / false
+    try {
+        const { userId } = req.params;
+        const { present, date } = req.body;  // true / false
 
-    console.log("present:", req.body.present);
-    
+        console.log("present:", req.body.present);
 
-    const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ message: "User not found" });
+        const today = new Date(date)
+        const dateOnly = today.toISOString().split('T')[0]
 
-    let date = req.body.date
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
 
-    // Check if today's attendance already exists
-    const existing = user.attendance.find(
-      (entry) => new Date(entry.date).toLocaleDateString('en-CA') === date
-    );
 
-    if (existing) {
-      existing.present = present; // Update existing
 
-    } else {
-      user.attendance.push({
-        present,
-        date: new Date()
-      });
+        // Check if today's attendance already exists
+        const existing = user.attendance.find(
+            (entry) => entry.date.toISOString().split('T')[0] === dateOnly
+        );
+
+        if (existing) {
+            existing.present = present; // Update existing
+
+        } else {
+            user.attendance.push({
+                date: today,
+                present
+            });
+        }
+
+        await user.save();
+        // console.log("user:", user);
+
+
+        res.json({ message: "Attendance marked successfully", attendance: user.attendance });
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "Server error" });
     }
-
-    await user.save();
-    // console.log("user:", user);
-    
-
-    res.json({ message: "Attendance marked successfully", attendance: user.attendance });
-
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: "Server error" });
-  }
 };
 
 exports.getAttendance = async (req, res) => {
-  try {
-    const { date } = req.params; // "2025-02-01"
-    
-    const users = await User.find().select("name position images attendance");
+    try {
+        const { date } = req.params; // "2025-02-01"
 
-    const data = users.map(user => {
-      const record = user.attendance.find(a =>
-        new Date(a.date).toISOString().slice(0, 10) === date
-      );
-      
-      return {
-        userId: user._id,
-        present: record?.present ?? null,
-      };
-    });
+        const users = await User.find().select("name position images attendance");
 
-    res.json({ data });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+        const data = users.map(user => {
+            const record = user.attendance.find(a =>
+                new Date(a.date).toISOString().slice(0, 10) === date
+            );
+
+            return {
+                userId: user._id,
+                present: record?.present ?? null,
+            };
+        });
+
+        res.json({ data });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 };
 
 

@@ -8,6 +8,7 @@ const AdminIcon = () => {
 
     const logOut = () => {
         localStorage.removeItem('token')
+        localStorage.removeItem("userType");
         navigate('/')
     }
 

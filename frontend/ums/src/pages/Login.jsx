@@ -4,15 +4,13 @@ import axios from 'axios'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from "react-router-dom"
-import { UserContext } from '../UserContext';
-import { useContext } from 'react';
 
 const Login = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const navigate = useNavigate()
 
-    const { setUsertype } = useContext(UserContext)
+
 
 
     const handleSubmit = async (e) => {
@@ -36,14 +34,13 @@ const Login = () => {
 
             }
             // console.log('logged in: ', response.data)
-
-            if (userType) {
-                setUsertype(userType)
-
-                console.log("userType:", userType);
+            if(userType){
+                console.log("userType :" , userType);
+                localStorage.setItem('userType', userType)
                 
-
             }
+
+           
 
                 if(userType !== "admin" && firstLogin == true){
                     return navigate('/resetpassword' , {state: {id}})

@@ -20,6 +20,7 @@ import {
 
 const Tasks = () => {
   const [tasks, setTasks] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
 
   // Fetch all tasks
   useEffect(() => {
@@ -83,11 +84,11 @@ const Tasks = () => {
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
-      <Sidebar />
+      <Sidebar isOpen={isOpen} setIsOpen={setIsOpen}/>
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
-        <Header />
+        <Header isOpen={isOpen} setIsOpen={setIsOpen} />
 
         {/* Page Header */}
         <div className="mx-6 mt-8 flex justify-between items-center">

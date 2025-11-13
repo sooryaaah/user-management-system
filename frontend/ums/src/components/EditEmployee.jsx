@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { Edit, X } from "lucide-react";
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import { UserContext } from '../UserContext';
-import { useContext } from 'react';
+
 
 
 
 
 const EditEmployee = ({ id }) => {
-    const {usertype} = useContext(UserContext)
-    console.log("user type:", usertype);
+   
+    const userType = localStorage.getItem('userType')
+    console.log("user type:", userType);
     
     const [modal, setModal] = useState(false)
     const [formData, setFormData] = useState({
@@ -132,7 +132,7 @@ const EditEmployee = ({ id }) => {
                                     name="position"
                                     value={formData.position}
                                     onChange={handleChange}
-                                    disabled={usertype === "admin"}
+                                    disabled={userType === "employee"}
                                     className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300"
                                 />
                             </div>
@@ -143,6 +143,7 @@ const EditEmployee = ({ id }) => {
                                     name="department"
                                     value={formData.department}
                                     onChange={handleChange}
+                                    disabled={userType === "employee"}
                                     className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300"
                                 />
                             </div>

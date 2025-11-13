@@ -9,7 +9,7 @@ import EmployeeDetail from './pages/EmployeeDetail.jsx'
 import EmailVerification from './pages/EmailVerification.jsx'
 import OtpVerification from './pages/OtpVerification.jsx'
 import ResetPassword from './pages/ResetPassword.jsx'
-import { UserProvider } from './UserContext.jsx'
+
 import EmployeeDashboard from './pages/EmployeeDashboard.jsx'
 import AttendancePage from './pages/AttendancePage.jsx'
 import MainResetPassword from './pages/MainResetPassword.jsx'

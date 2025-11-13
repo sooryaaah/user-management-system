@@ -22,6 +22,7 @@ const Dashboard = () => {
   const [pendingTasks, setPendingTasks] = useState(0);
   const [completedTasks, setCompletedTasks] = useState(0);
   const [attendanceTrend, setAttendanceTrend] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
 
   const token = localStorage.getItem("token");
 
@@ -94,11 +95,11 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <Sidebar />
+    <div className="flex min-h-screen bg-gray-50 pt-16 md:pt-0">
+      <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
 
       <div className="flex-1 flex flex-col">
-        <Header />
+        <Header isOpen={isOpen} setIsOpen={setIsOpen} />
 
         <div className="mx-6 mt-8">
           <h1 className="text-3xl font-bold text-gray-800">Dashboard</h1>
