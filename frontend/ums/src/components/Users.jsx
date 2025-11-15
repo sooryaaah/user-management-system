@@ -64,66 +64,73 @@ const Users = () => {
         </div>
 
         {/* Employee Table */}
-        <div className="overflow-x-auto px-4 sm:px-6 mt-6">
-          <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm text-sm md:text-base">
-            <thead className="bg-gray-100 text-gray-600 uppercase text-xs md:text-sm">
-              <tr>
-                <th className="py-3 px-4 border-b">Name</th>
-                <th className="py-3 px-4 border-b">Email</th>
-                <th className="py-3 px-4 border-b">Position</th>
-                <th className="py-3 px-4 border-b">Department</th>
-                <th className="py-3 px-4 border-b">Join Date</th>
-                <th className="py-3 px-4 border-b">Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {employees.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan="6"
-                    className="text-center text-gray-500 py-6 text-sm md:text-base"
-                  >
-                    No employees found. Add your first employee to get started.
-                  </td>
-                </tr>
-              ) : (
-                employees.map((emp) => (
-                  <tr
-                    key={emp._id}
-                    className="border-t hover:bg-gray-50 transition"
-                  >
-                    <td
-                      onClick={() => navigate(`/employeedetail/${emp._id}`)}
-                      className="px-4 py-3 cursor-pointer flex items-center gap-3"
-                    >
-                      <img
-                        className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover"
-                        src={emp?.images?.secure_url}
-                        alt=""
-                      />
-                      <span className="truncate">{emp.name}</span>
-                    </td>
-
-                    <td className="px-4 py-3 truncate">{emp.email}</td>
-                    <td className="px-4 py-3">{emp.position}</td>
-                    <td className="px-4 py-3">{emp.department}</td>
-                    <td className="px-4 py-3">{emp.joinDate}</td>
-                    <td
-                      onClick={() => deleteUser(emp._id)}
-                      className="px-4 py-3"
-                    >
-                      <Trash2
-                        size={18}
-                        className="text-red-500 cursor-pointer hover:text-red-600 transition"
-                      />
-                    </td>
+        <div className="px-4 sm:px-6 mt-6">
+          {/* scroll container */}
+          <div className="overflow-x-auto w-full">
+            {/* this inline-block forces the inner content to keep its width and trigger scrolling */}
+            <div className="inline-block min-w-[900px] md:w-full align-middle">
+              <table className="w-full bg-white border border-gray-200 rounded-lg shadow-sm text-sm md:text-base">
+                <thead className="bg-gray-100 text-gray-600 uppercase text-xs md:text-sm">
+                  <tr>
+                    <th className="py-3 px-4 border-b whitespace-nowrap">Name</th>
+                    <th className="py-3 px-4 border-b whitespace-nowrap">Email</th>
+                    <th className="py-3 px-4 border-b whitespace-nowrap">Position</th>
+                    <th className="py-3 px-4 border-b whitespace-nowrap">Department</th>
+                    <th className="py-3 px-4 border-b whitespace-nowrap">Join Date</th>
+                    <th className="py-3 px-4 border-b whitespace-nowrap">Actions</th>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                </thead>
+
+                <tbody>
+                  {employees.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan="6"
+                        className="text-center text-gray-500 py-6 text-sm md:text-base"
+                      >
+                        No employees found. Add your first employee to get started.
+                      </td>
+                    </tr>
+                  ) : (
+                    employees.map((emp) => (
+                      <tr
+                        key={emp._id}
+                        className="border-t hover:bg-gray-50 transition"
+                      >
+                        <td
+                          onClick={() => navigate(`/employeedetail/${emp._id}`)}
+                          className="px-4 py-3 cursor-pointer flex items-center gap-3 whitespace-nowrap"
+                        >
+                          <img
+                            className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover flex-shrink-0"
+                            src={emp?.images?.secure_url}
+                            alt=""
+                          />
+                          <span className="truncate">{emp.name}</span>
+                        </td>
+
+                        <td className="px-4 py-3 truncate whitespace-nowrap">{emp.email}</td>
+                        <td className="px-4 py-3 whitespace-nowrap">{emp.position}</td>
+                        <td className="px-4 py-3 whitespace-nowrap">{emp.department}</td>
+                        <td className="px-4 py-3 whitespace-nowrap">{emp.joinDate}</td>
+                        <td
+                          onClick={() => deleteUser(emp._id)}
+                          className="px-4 py-3 whitespace-nowrap"
+                        >
+                          <Trash2
+                            size={18}
+                            className="text-red-500 cursor-pointer hover:text-red-600 transition"
+                          />
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
+
       </div>
     </div>
   );
